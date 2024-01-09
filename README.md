@@ -1,5 +1,3 @@
-# naxios
-
 <div align="center">
    <img src="./md/naxios-logo.png" /></a><br>
 </div>
