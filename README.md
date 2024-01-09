@@ -43,7 +43,7 @@ yarn add @wpdas/naxios
 Using contract's `view` request:
 
 ```ts
-import naxios from 'naxios'
+import naxios from '@wpdas/naxios'
 
 const contractApi = new naxios({
   contractId: CONTRACT_ID,
@@ -56,7 +56,7 @@ contractApi.view('get_greeting').then((response) => console.log(response)) // Hi
 Using contract's `call` request:
 
 ```ts
-import naxios from 'naxios'
+import naxios from '@wpdas/naxios'
 
 const contractApi = new naxios({
   contractId: CONTRACT_ID,
@@ -71,7 +71,7 @@ Creating a contract interface:
 
 ```ts
 // contract-interface.ts
-import naxios from 'naxios'
+import naxios from '@wpdas/naxios'
 
 const contractApi = new naxios({
   contractId: CONTRACT_ID,
@@ -95,7 +95,7 @@ export const set_greeting = (args: { greeting: string }) =>
 Using `walletApi`:
 
 ```ts
-import naxios from 'naxios'
+import naxios from '@wpdas/naxios'
 
 const walletApi = new naxios({
   contractId: CONTRACT_ID,
@@ -121,7 +121,7 @@ console.log(walletApi.accounts)
 You can use the contract API and the wallet API through the same naxios instance:
 
 ```ts
-import naxios from 'naxios'
+import naxios from '@wpdas/naxios'
 
 const naxiosApi = new naxios({
   contractId: CONTRACT_ID,
@@ -150,7 +150,7 @@ npm install @near-wallet-selector/ledger @near-wallet-selector/my-near-wallet
 Then, you can start naxius as follows:
 
 ```ts
-import naxios from 'naxios'
+import naxios from '@wpdas/naxios'
 import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet'
 import { setupLedger } from '@near-wallet-selector/ledger'
 import MyNearIconUrl from '@near-wallet-selector/my-near-wallet/assets/my-near-wallet-icon.png'
