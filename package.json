@@ -1,0 +1,51 @@
+{
+  "name": "naxios",
+  "version": "0.1.0",
+  "description": "Promise based NEAR Contract and NEAR Wallet client for browser",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rm -rf dist; npm run build:esm; npm run build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "prepack": "npm install; npm run build"
+  },
+  "keywords": [
+    "naxios",
+    "contract",
+    "wallet",
+    "api",
+    "near",
+    "near-protocol",
+    "blockchain",
+    "smart-contract",
+    "react",
+    "web3"
+  ],
+  "author": "Wenderson Pires <wendersonpdas@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@near-wallet-selector/core": "^8.9.1",
+    "@near-wallet-selector/modal-ui": "^8.9.1",
+    "@near-wallet-selector/my-near-wallet": "^8.9.1",
+    "near-api-js": "^2.1.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.5",
+    "@types/react": "^18.0.12",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
+    "eslint": "^8.36.0",
+    "eslint-config-prettier": "^8.7.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "install": "^0.13.0",
+    "prettier": "^2.8.4",
+    "tslib": "^2.5.0",
+    "typescript": "^5.3.3"
+  }
+}
