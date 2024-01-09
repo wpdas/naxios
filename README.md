@@ -238,4 +238,4 @@ useEffect(() => {
 
 ## Contributing
 
-Feel free to open issues or pull requests. For major changes, please open an issue first to discuss what you would like to change.
+We welcome contributions! Feel free to open issues or pull requests. For major changes, please open an issue first to discuss what you would like to change.
