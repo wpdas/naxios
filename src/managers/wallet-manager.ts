@@ -1,4 +1,3 @@
-import '@near-wallet-selector/modal-ui/styles.css'
 import { keyStores } from 'near-api-js'
 import {
   Account,

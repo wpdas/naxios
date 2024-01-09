@@ -27,16 +27,24 @@
 Using npm:
 
 ```bash
-npm install @wpdas/naxios
+npm install @wpdas/naxios @near-wallet-selector/modal-ui@8.9.1
 ```
 
 using yarn:
 
 ```bash
-yarn add @wpdas/naxios
+yarn add @wpdas/naxios @near-wallet-selector/modal-ui@8.9.1
 ```
 
 ## Example
+
+### Importing Styles
+
+Import the Wallet Selector styles:
+
+```ts
+import '@near-wallet-selector/modal-ui/styles.css'
+```
 
 ### Contract API
 
@@ -121,6 +129,7 @@ console.log(walletApi.accounts)
 You can use the contract API and the wallet API through the same naxios instance:
 
 ```ts
+import '@near-wallet-selector/modal-ui/styles.css'
 import naxios from '@wpdas/naxios'
 
 const naxiosApi = new naxios({
