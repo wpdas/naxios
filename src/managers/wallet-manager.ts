@@ -20,6 +20,13 @@ const getMainnetConfig = () => ({
   keyStores: new keyStores.BrowserLocalStorageKeyStore('keyStores:mainnet'),
 })
 
+const getLocalnetConfig = () => ({
+  networkId: 'localnet',
+  keyStores: new keyStores.BrowserLocalStorageKeyStore('keyStores:localnet'),
+})
+
+const configsList = { testnet: getTestnetConfig, mainnet: getMainnetConfig, localnet: getLocalnetConfig }
+
 export class WalletManager {
   // Default wallet selector modules
   private walletSelectorModules!: WalletModuleFactory[]
@@ -49,7 +56,7 @@ export class WalletManager {
 
   // Init Near => To be called when the website loads
   async initNear() {
-    const nearConfig = this.network === 'mainnet' ? getMainnetConfig() : getTestnetConfig()
+    const nearConfig = configsList[this.network]()
 
     // Initialize Wallet Selector
     const walletSelector = await setupWalletSelector({
