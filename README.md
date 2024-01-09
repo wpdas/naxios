@@ -1,6 +1,28 @@
 # naxios
 
-Promise based NEAR Contract and NEAR Wallet client for browser. This was designed to facilitate the React integration with NEAR Blockchain and avoid the huge boilerplate of setting up a wallet and contract.
+<div align="center">
+   <img src="./md/naxios-logo.png" /></a><br>
+</div>
+
+<p align="center">Promise based NEAR Contract and NEAR Wallet client for browser. This was designed to facilitate the React integration with NEAR Blockchain and avoid the huge boilerplate of setting up a wallet and contract.</p>
+
+## Table of Contents
+
+- [Features](#features)
+- [Installing](#installing)
+- [Example](#example)
+- [React Hooks](#react-hooks)
+- [Contributing](#contributing)
+
+## Features
+
+- Simplified Wallet and Contract integration
+- Supports the [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) API
+- Easy to create a Contract Interface
+- Wallet connection modal to be easily used
+- Automatic transforms for [JSON](https://www.json.org/json-en.html) data
+- Client side events to tell when the api is ready
+- Helpful react hooks
 
 ## Installing
 
