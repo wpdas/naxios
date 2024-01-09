@@ -1,6 +1,6 @@
 {
-  "name": "naxios",
-  "version": "0.1.1",
+  "name": "@wpdas/naxios",
+  "version": "0.1.0",
   "description": "Promise based NEAR Contract and NEAR Wallet client for browser",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",

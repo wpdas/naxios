@@ -27,13 +27,13 @@
 Using npm:
 
 ```bash
-npm install naxios
+npm install @wpdas/naxios
 ```
 
 using yarn:
 
 ```bash
-yarn add naxios
+yarn add @wpdas/naxios
 ```
 
 ## Example
