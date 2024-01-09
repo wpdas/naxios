@@ -226,9 +226,15 @@ useEffect(() => {
 
 #### API
 
-- `ready`: boolean indicating whether the contractApi is ready.
-- `view`: Make a read-only call to retrieve information from the network.
-- `call`: Call a method that changes the contract's state. This is payable.
+The `walletApi` exposes:
+
+- `accounts`: Signed-in Accounts.
+- `contractId`: Contract ID.
+- `initNear`: (This is called automatically. You don't need to call it!) Initializes a connection to the NEAR blockchain.
+- `network`: Current network (`testnet`, `mainnet` or `localnet`).
+- `signInModal`: Open up the Signin Wallet Modal.
+- `wallet`: Wallet instance.
+- `walletSelector`: WalletSelector instance.
 
 <!-- To add a separator line -->
 
