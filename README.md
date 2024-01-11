@@ -34,7 +34,7 @@ Using npm:
 npm install @wpdas/naxios @near-wallet-selector/modal-ui@8.9.1
 ```
 
-using yarn:
+Using yarn:
 
 ```bash
 yarn add @wpdas/naxios @near-wallet-selector/modal-ui@8.9.1
@@ -230,7 +230,7 @@ useEffect(() => {
 }, [contract])
 ```
 
-#### useContract API Reference
+#### API
 
 - `ready`: boolean indicating whether the contract API is ready.
 - `view`: Make a read-only call to retrieve information from the network.
@@ -257,7 +257,7 @@ useEffect(() => {
 }, [wallet])
 ```
 
-#### useWallet API Reference
+#### API
 
 - `ready`: boolean indicating whether the wallet API is ready.
 - `walletApi`: Wallet API. See its [API Reference here](#wallet-api-reference).
