@@ -1,9 +1,9 @@
 {
   "name": "@wpdas/naxios",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Promise based NEAR Contract and NEAR Wallet client for browser",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
   "homepage": "https://github.com/wpdas/naxios",
