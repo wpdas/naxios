@@ -84,7 +84,6 @@ export const walletApi = naxiosInstance.walletApi(onWalletInitHandler)
 
 #### Contract API Reference
 
-- `ready`: boolean indicating whether the contractApi is ready.
 - `view`: Make a read-only call to retrieve information from the network.
 - `call`: Call a method that changes the contract's state. This is payable.
 
@@ -231,6 +230,12 @@ useEffect(() => {
 }, [contract])
 ```
 
+#### useContract API Reference
+
+- `ready`: boolean indicating whether the contract API is ready.
+- `view`: Make a read-only call to retrieve information from the network.
+- `call`: Call a method that changes the contract's state. This is payable.
+
 <!-- To add a separator line -->
 
 ##
@@ -251,6 +256,11 @@ useEffect(() => {
   }
 }, [wallet])
 ```
+
+#### useWallet API Reference
+
+- `ready`: boolean indicating whether the wallet API is ready.
+- `walletApi`: Wallet API. See its [API Reference here](#wallet-api-reference).
 
 ## Contributing
 
