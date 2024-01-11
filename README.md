@@ -199,16 +199,11 @@ Then, you can start naxius as follows:
 import naxios from '@wpdas/naxios'
 import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet'
 import { setupLedger } from '@near-wallet-selector/ledger'
-import MyNearIconUrl from '@near-wallet-selector/my-near-wallet/assets/my-near-wallet-icon.png'
-import LedgerIconUrl from '@near-wallet-selector/ledger/assets/ledger-icon.png'
 
 const naxiosApi = new naxios({
   contractId: CONTRACT_ID,
   network: 'testnet', // or mainnet, localnet
-  walletSelectorModules: [
-    setupMyNearWallet({ iconUrl: MyNearIconUrl.src }),
-    setupLedger({ iconUrl: LedgerIconUrl.src }),
-  ],
+  walletSelectorModules: [setupMyNearWallet(), setupLedger()],
 })
 ```
 

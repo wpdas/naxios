@@ -1,6 +1,5 @@
 import { WalletModuleFactory } from '@near-wallet-selector/core'
 import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet'
-import MyNearIconUrl from '@near-wallet-selector/my-near-wallet/assets/my-near-wallet-icon.png'
 import ContractManager from './managers/contract-manager'
 import WalletManager from './managers/wallet-manager'
 import { Config, Network } from './managers/types'
@@ -8,7 +7,7 @@ import { Config, Network } from './managers/types'
 class naxios {
   private contractId: string
   private network: Network
-  private walletSelectorModules: WalletModuleFactory[] = [setupMyNearWallet({ iconUrl: MyNearIconUrl.src })]
+  private walletSelectorModules: WalletModuleFactory[] = [setupMyNearWallet()]
 
   constructor(config: Config) {
     this.contractId = config.contractId

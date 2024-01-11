@@ -1,11 +1,10 @@
 {
   "name": "@wpdas/naxios",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Promise based NEAR Contract and NEAR Wallet client for browser",
   "main": "dist/cjs/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "type": "module",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
   "homepage": "https://github.com/wpdas/naxios",
   "repository": {
     "type": "git",
@@ -17,9 +16,7 @@
     "LICENSE.md"
   ],
   "scripts": {
-    "build": "rm -rf dist; npm run build:esm; npm run build:cjs",
-    "build:esm": "tsc",
-    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "build": "rm -rf dist; tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
     "prepack": "npm install; npm run build"
   },
   "keywords": [
