@@ -82,7 +82,7 @@ export const contractApi = naxiosInstance.contractApi(onContractInitHandler)
 export const walletApi = naxiosInstance.walletApi(onWalletInitHandler)
 ```
 
-Or you can invoke them anytime:
+You can also invoke a new instance anywhere, anytime with a new configuration if you wish:
 
 ```ts
 // Invoking a Contract API
