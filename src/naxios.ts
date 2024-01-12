@@ -9,7 +9,7 @@ class naxios {
   private network: Network
   private walletSelectorModules: WalletModuleFactory[] = [setupMyNearWallet()]
 
-  constructor(config: Config) {
+  constructor(config: Omit<Config, 'onInit'>) {
     this.contractId = config.contractId
     this.network = config.network
     if (config.walletSelectorModules) {
@@ -39,6 +39,24 @@ class naxios {
       onInit,
     })
   }
+}
+
+/** Get a New Instant Contract API */
+export const getContractApi = (config: Omit<Config, 'onInit'>) => {
+  return new Promise<ContractManager>((resolve) => {
+    const contractInstance = new naxios(config).contractApi(() => {
+      resolve(contractInstance)
+    })
+  })
+}
+
+/** Get a New Instant Wallet API */
+export const getWalletApi = (config: Omit<Config, 'onInit'>) => {
+  return new Promise<WalletManager>((resolve) => {
+    const walletInstance = new naxios(config).walletApi(() => {
+      resolve(walletInstance)
+    })
+  })
 }
 
 /** Naxios API */

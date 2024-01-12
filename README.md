@@ -82,6 +82,37 @@ export const contractApi = naxiosInstance.contractApi(onContractInitHandler)
 export const walletApi = naxiosInstance.walletApi(onWalletInitHandler)
 ```
 
+Or you can invoke them anytime:
+
+```ts
+// Invoking a Contract API
+import { getContractApi } from '@wpdas/naxios'
+
+// New contract instance
+const contract = await getContractApi({
+  contractId: ANOTHER_CONTRACT_ID,
+  network: 'testnet',
+})
+
+const response = await contract.view('get_users', {
+  args: { limit: 5 },
+})
+```
+
+```ts
+// Invoking a Wallet API
+import { getWalletApi } from '@wpdas/naxios'
+
+// New wallet instance
+const walletApi = await getWalletApi({
+  contractId: ANOTHER_CONTRACT_ID,
+  network: 'testnet',
+})
+
+// Open up the Signin Wallet Modal
+walletApi.signInModal()
+```
+
 #### Contract API Reference
 
 - `view`: Make a read-only call to retrieve information from the network.
