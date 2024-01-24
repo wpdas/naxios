@@ -2,11 +2,9 @@
 
 ## MAIN
 
-- ✔
+- insert `callbackUrl` for `contractApi.call(...)` ✔
 
 ## Next steps
-
-- insert `callbackUrl` for `contractApi.call(...)`
 
 ## Backlog
 

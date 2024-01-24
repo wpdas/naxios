@@ -46,7 +46,13 @@ class ContractManager {
   }
 
   // Build Call Method Interface
-  private async buildCallInterface<R>({ method = '', args = {}, gas = THIRTY_TGAS, deposit = NO_DEPOSIT }) {
+  private async buildCallInterface<R>({
+    method = '',
+    args = {},
+    gas = THIRTY_TGAS,
+    deposit = NO_DEPOSIT,
+    callbackUrl = '',
+  }) {
     if (!this.walletManager.walletSelector) {
       await this.walletManager.initNear()
     }
@@ -62,6 +68,7 @@ class ContractManager {
     const outcome = await this.walletManager.wallet!.signAndSendTransaction({
       signerId: accountId,
       receiverId: this.walletManager.contractId,
+      callbackUrl,
       actions: [
         {
           type: 'FunctionCall',

@@ -7,6 +7,7 @@ export type ChangeMethodArgs<A> = {
   args: A
   gas?: string
   deposit?: string
+  callbackUrl?: string
 }
 export type Network = 'mainnet' | 'testnet' | 'localnet'
 export type Config = {
