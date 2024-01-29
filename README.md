@@ -115,8 +115,12 @@ walletApi.signInModal()
 
 #### Contract API Reference
 
-- `view`: Make a read-only call to retrieve information from the network.
-- `call`: Call a method that changes the contract's state. This is payable.
+- `view`: Make a read-only call to retrieve information from the network. It has the following parameters:
+  - `method`: Contract's method name
+  - `props`: an optional parameter with `args` for the contract's method
+- `call`: Call a method that changes the contract's state. This is payable. It has the following parameters:
+  - `method`: Contract's method name
+  - `props`: an optional parameter with `args` for the contract's method, `gas`, `deposit` to be attached and `callbackUrl` if you want to take the user to a specific page after a transaction succeeds.
 
 #### Wallet API Reference
 
@@ -259,8 +263,12 @@ useEffect(() => {
 #### API
 
 - `ready`: boolean indicating whether the contract API is ready.
-- `view`: Make a read-only call to retrieve information from the network.
-- `call`: Call a method that changes the contract's state. This is payable.
+- `view`: Make a read-only call to retrieve information from the network. It has the following parameters:
+  - `method`: Contract's method name
+  - `props`: an optional parameter with `args` for the contract's method
+- `call`: Call a method that changes the contract's state. This is payable. It has the following parameters:
+  - `method`: Contract's method name
+  - `props`: an optional parameter with `args` for the contract's method, `gas`, `deposit` to be attached and `callbackUrl` if you want to take the user to a specific page after a transaction succeeds.
 
 <!-- To add a separator line -->
 
