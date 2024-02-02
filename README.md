@@ -178,7 +178,7 @@ const transactionC = buildTransaction('update_state', {
 const callbackUrl = 'https://my-page.com/callback-success'
 
 // [payable]
-const result = await contractApi.callMultiple([transactionA, transactionB, transactionC], callbackUrl)
+contractApi.callMultiple([transactionA, transactionB, transactionC], callbackUrl).then(() => console.log('Done!'))
 ```
 
 ### Contract Interface
