@@ -162,7 +162,8 @@ contractApi.call('set_greeting', { greeting: 'Hello my dear!' }).then(() => cons
 As well as the `call`, you will need to pay for every request you make. This is going to change data and store it within the blockchain.
 
 ```ts
-import { contractApi, buildTransaction } from './web3Api'
+import { buildTransaction } from '@wpdas/naxios'
+import { contractApi } from './web3Api'
 
 // Using the default instance's contract
 const transactionA = buildTransaction('set_greeting', { args: { greeting: 'Hello my dear!' } })
