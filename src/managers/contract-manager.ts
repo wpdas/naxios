@@ -110,7 +110,7 @@ class ContractManager {
             type: 'FunctionCall',
             params: {
               methodName: transaction.method,
-              args: transaction.args,
+              args: transaction.args || {},
               gas: transaction.gas || THIRTY_TGAS,
               deposit: transaction.deposit || NO_DEPOSIT,
             },

@@ -22,7 +22,7 @@ export type ChangeMethodArgs<A> = {
 export type Transaction<A> = {
   receiverId?: string
   method: string
-  args: A
+  args?: A
   gas?: string
   /**
    * yoctoⓃ amount

@@ -121,9 +121,9 @@ walletApi.signInModal()
 - `call`: Call a method that changes the contract's state. This is payable. It has the following parameters:
   - `method`: Contract's method name
   - `props?`: an optional parameter with `args` for the contract's method, `gas`, `deposit` to be attached and `callbackUrl` if you want to take the user to a specific page after a transaction succeeds.
-- `callMultiple`: Call multiple methods that changes the contract's state. This is payable and has the following parameters:
+- `callMultiple`: Call multiple methods that change the contract's state. This is payable and has the following parameters:
   - `transactionsList`: A list of Transaction props. You can use `buildTransaction(...)` to help you out
-  - `callbackUrl?`: A page to take the user to after all the transactions succeeds.
+  - `callbackUrl?`: A page to take the user to after all the transactions succeed.
 
 #### Wallet API Reference
 
@@ -296,9 +296,9 @@ useEffect(() => {
 - `call`: Call a method that changes the contract's state. This is payable. It has the following parameters:
   - `method`: Contract's method name
   - `props?`: an optional parameter with `args` for the contract's method, `gas`, `deposit` to be attached and `callbackUrl` if you want to take the user to a specific page after a transaction succeeds.
-- `callMultiple`: Call multiple methods that changes the contract's state. This is payable and has the following parameters:
+- `callMultiple`: Call multiple methods that change the contract's state. This is payable and has the following parameters:
   - `transactionsList`: A list of Transaction props. You can use `buildTransaction(...)` to help you out
-  - `callbackUrl?`: A page to take the user to after all the transactions succeeds.
+  - `callbackUrl?`: A page to take the user to after all the transactions succeed.
 
 <!-- To add a separator line -->
 
