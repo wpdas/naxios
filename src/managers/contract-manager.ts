@@ -1,8 +1,9 @@
 import { providers } from 'near-api-js'
+import { Transaction as CoreTransaction } from '@near-wallet-selector/core'
 import { NO_DEPOSIT, THIRTY_TGAS } from './constants'
 import { QueryResponseKind } from 'near-api-js/lib/providers/provider'
 import WalletManager from './wallet-manager'
-import { ChangeMethodArgs, ViewMethodArgs } from './types'
+import { ChangeMethodArgs, Transaction, ViewMethodArgs } from './types'
 
 type ResultType = QueryResponseKind & { result: any }
 
@@ -85,6 +86,47 @@ class ContractManager {
     return Promise.resolve(providers.getTransactionLastResult(outcome as providers.FinalExecutionOutcome) as R)
   }
 
+  // Build Call Multi Method
+  private async buildCallMultiMethod<A extends object>(transactionsList: Transaction<A>[], callbackUrl?: string) {
+    if (!this.walletManager.walletSelector) {
+      await this.walletManager.initNear()
+    }
+
+    // Check if wallet is connected
+    if (!this.walletManager.walletSelector.isSignedIn()) {
+      return Promise.reject({ error: 'No wallet connected' })
+    }
+
+    const { accountId } = this.walletManager.accounts[0]
+
+    const transactions: CoreTransaction[] = []
+
+    transactionsList.forEach((transaction) => {
+      transactions.push({
+        signerId: accountId,
+        receiverId: transaction.receiverId || this.walletManager.contractId,
+        actions: [
+          {
+            type: 'FunctionCall',
+            params: {
+              methodName: transaction.method,
+              args: transaction.args,
+              gas: transaction.gas || THIRTY_TGAS,
+              deposit: transaction.deposit || NO_DEPOSIT,
+            },
+          },
+        ],
+      })
+    })
+
+    const outcome = await this.walletManager.wallet!.signAndSendTransactions({
+      transactions,
+      callbackUrl,
+    })
+
+    return outcome
+  }
+
   /**
    * [view] Make a read-only call to retrieve information from the network
    * @param method Contract's method name
@@ -100,11 +142,21 @@ class ContractManager {
    * @param method Contract's method name
    * @param {A} props.args - Function parameters
    * @param {string} props.gas - (optional) gas
-   * @param {string} props.deposit - (optional) deposit
+   * @param {string} props.deposit - (optional) yoctoⓃ amount
    * @returns
    */
   async call<A extends {}, R>(method: string, props?: ChangeMethodArgs<A>) {
     return this.buildCallInterface<R>({ method, ...props })
+  }
+
+  /**
+   * [payable] Call multiple methods that changes the contract's state
+   * @param {Transaction[]} transactionsList A list of Transaction props. You can use `buildTransaction(...)` to help you out
+   * @param callbackUrl A page to take the user to after all the transactions succeeds.
+   * @returns
+   */
+  async callMultiple<A extends object>(transactionsList: Transaction<A>[], callbackUrl?: string) {
+    return this.buildCallMultiMethod<A>(transactionsList, callbackUrl)
   }
 }
 

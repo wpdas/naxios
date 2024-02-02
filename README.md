@@ -117,10 +117,13 @@ walletApi.signInModal()
 
 - `view`: Make a read-only call to retrieve information from the network. It has the following parameters:
   - `method`: Contract's method name
-  - `props`: an optional parameter with `args` for the contract's method
+  - `props?`: an optional parameter with `args` for the contract's method
 - `call`: Call a method that changes the contract's state. This is payable. It has the following parameters:
   - `method`: Contract's method name
-  - `props`: an optional parameter with `args` for the contract's method, `gas`, `deposit` to be attached and `callbackUrl` if you want to take the user to a specific page after a transaction succeeds.
+  - `props?`: an optional parameter with `args` for the contract's method, `gas`, `deposit` to be attached and `callbackUrl` if you want to take the user to a specific page after a transaction succeeds.
+- `callMultiple`: Call multiple methods that changes the contract's state. This is payable and has the following parameters:
+  - `transactionsList`: A list of Transaction props. You can use `buildTransaction(...)` to help you out
+  - `callbackUrl?`: A page to take the user to after all the transactions succeeds.
 
 #### Wallet API Reference
 
@@ -152,6 +155,29 @@ import { contractApi } from './web3Api'
 
 // [payable]
 contractApi.call('set_greeting', { greeting: 'Hello my dear!' }).then(() => console.log('Done!'))
+```
+
+### Contract Multiple Calls at Once
+
+As well as the `call`, you will need to pay for every request you make. This is going to change data and store it within the blockchain.
+
+```ts
+import { contractApi, buildTransaction } from './web3Api'
+
+// Using the default instance's contract
+const transactionA = buildTransaction('set_greeting', { args: { greeting: 'Hello my dear!' } })
+const transactionB = buildTransaction('set_age', { args: { age: 22 } })
+// Using diff contract
+const transactionC = buildTransaction('update_state', {
+  receiverId: 'my-state-contract.testnet',
+  args: { allowed: true },
+})
+
+// Optional
+const callbackUrl = 'https://my-page.com/callback-success'
+
+// [payable]
+const result = await contractApi.callMultiple([transactionA, transactionB, transactionC], callbackUrl)
 ```
 
 ### Contract Interface
@@ -265,10 +291,13 @@ useEffect(() => {
 - `ready`: boolean indicating whether the contract API is ready.
 - `view`: Make a read-only call to retrieve information from the network. It has the following parameters:
   - `method`: Contract's method name
-  - `props`: an optional parameter with `args` for the contract's method
+  - `props?`: an optional parameter with `args` for the contract's method
 - `call`: Call a method that changes the contract's state. This is payable. It has the following parameters:
   - `method`: Contract's method name
-  - `props`: an optional parameter with `args` for the contract's method, `gas`, `deposit` to be attached and `callbackUrl` if you want to take the user to a specific page after a transaction succeeds.
+  - `props?`: an optional parameter with `args` for the contract's method, `gas`, `deposit` to be attached and `callbackUrl` if you want to take the user to a specific page after a transaction succeeds.
+- `callMultiple`: Call multiple methods that changes the contract's state. This is payable and has the following parameters:
+  - `transactionsList`: A list of Transaction props. You can use `buildTransaction(...)` to help you out
+  - `callbackUrl?`: A page to take the user to after all the transactions succeeds.
 
 <!-- To add a separator line -->
 

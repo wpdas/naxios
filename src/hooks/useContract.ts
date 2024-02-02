@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import naxios from '../naxios'
-import { ChangeMethodArgs, Config, ViewMethodArgs } from '../managers/types'
+import { ChangeMethodArgs, Config, Transaction, ViewMethodArgs } from '../managers/types'
 import ContractManager from '../managers/contract-manager'
 
 /**
@@ -35,6 +35,13 @@ const useContract = (config: Config) => {
     [contractApi]
   )
 
+  const callMultiple = useCallback(
+    async <A extends object>(transactionsList: Transaction<A>[], callbackUrl?: string) => {
+      return contractApi?.callMultiple<A>(transactionsList, callbackUrl)
+    },
+    [contractApi]
+  )
+
   return {
     /**
      * Is hook ready?
@@ -52,10 +59,17 @@ const useContract = (config: Config) => {
      * @param method Contract's method name
      * @param {A} props.args - Function parameters
      * @param {string} props.gas - (optional) gas
-     * @param {string} props.deposit - (optional) deposit
+     * @param {string} props.deposit - (optional) yoctoⓃ amount
      * @returns
      */
     call,
+    /**
+     * [payable] Call multiple methods that changes the contract's state
+     * @param {Transaction[]} transactionsList A list of Transaction props. You can use `buildTransaction(...)` to help you out
+     * @param callbackUrl A page to take the user to after all the transactions succeeds.
+     * @returns
+     */
+    callMultiple,
   }
 }
 
