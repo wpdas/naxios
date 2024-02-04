@@ -14,6 +14,7 @@
 - [Installing](#installing)
 - [How to Use](#how-to-use)
 - [React Hooks](#react-hooks)
+- [Utils](#utils)
 - [Contributing](#contributing)
 
 ## Features
@@ -128,6 +129,7 @@ walletApi.signInModal()
 #### Wallet API Reference
 
 - `accounts`: Signed-in Accounts.
+- `accountId`: main/first signed-in account ID in the accounts list.
 - `contractId`: Contract ID.
 - `initNear`: (This is called automatically. You don't need to call it!) Initializes a connection to the NEAR blockchain.
 - `network`: Current network (`testnet`, `mainnet` or `localnet`).
@@ -326,6 +328,42 @@ useEffect(() => {
 - `ready`: boolean indicating whether the wallet API is ready.
 - `walletApi`: Wallet API. See its [API Reference here](#wallet-api-reference).
 
+## Utils
+
+### `buildTransaction`
+
+The `buildTransaction` method is useful when you need to build a contract's Transaction body, mainly when you want to make [**multiple contract calls**](#contract-multiple-calls-at-once).
+
+[**See reference here.**](#contract-multiple-calls-at-once)
+
+### `validateNearAddress`
+
+This is used to check if an address is a valid NEAR address.
+
+```ts
+import { validateNearAddress } from '@wpdas/naxios'
+
+console.log(validateNearAddress('fake.near')) // true
+console.log(validateNearAddress('fake.nears')) // false
+console.log(validateNearAddress('fake.testnet')) // true
+console.log(validateNearAddress('fake')) // false
+```
+
+### `calculateDepositByDataSize`
+
+Calculate required deposit for data being stored. (~0.00001N per byte) with a bit extra for buffer
+
+```ts
+import { calculateDepositByDataSize } from '@wpdas/naxios'
+
+const myData = { age: 22, name: 'user name' }
+console.log(calculateDepositByDataSize(myData)) // 0.00087 Near (not yocto NEAR)
+```
+
 ## Contributing
 
 Feel free to open issues or pull requests. For major changes, please open an issue first to discuss what you would like to change.
+
+```
+
+```
