@@ -275,7 +275,7 @@ Find out all the NEAR wallet selectors here: [**NEAR Wallet Selector**](https://
 
 ## React Hooks
 
-### `useContract`
+#### `useContract`
 
 The `useContract` hook initializes a connection to the NEAR Blockchain and provides access to the contractApi instance.
 
@@ -308,7 +308,7 @@ useEffect(() => {
 
 <!-- To add a separator line -->
 
-### `useWallet`
+#### `useWallet`
 
 The `useWallet` hook initializes a connection to the NEAR Blockchain and provides access to the walletApi instance.
 
@@ -330,13 +330,13 @@ useEffect(() => {
 
 ## Utils
 
-### `buildTransaction`
+#### `buildTransaction`
 
 The `buildTransaction` method is useful when you need to build a contract's Transaction body, mainly when you want to make [**multiple contract calls**](#contract-multiple-calls-at-once).
 
 [**See reference here.**](#contract-multiple-calls-at-once)
 
-### `validateNearAddress`
+#### `validateNearAddress`
 
 This is used to check if an address is a valid NEAR address.
 
@@ -349,7 +349,7 @@ console.log(validateNearAddress('fake.testnet')) // true
 console.log(validateNearAddress('fake')) // false
 ```
 
-### `calculateDepositByDataSize`
+#### `calculateDepositByDataSize`
 
 Calculate required deposit for data being stored. (~0.00001N per byte) with a bit extra for buffer
 
