@@ -35,6 +35,10 @@ export class WalletManager {
    * Signed In Accounts
    */
   accounts: Account[] = []
+  /**
+   * Main / First Signed In account id
+   */
+  accountId!: string | undefined
   network!: Network
   walletSelector!: WalletSelector
   wallet!: Wallet | undefined
@@ -72,6 +76,9 @@ export class WalletManager {
 
       const accounts = await wallet.getAccounts()
       this.accounts = accounts
+
+      // Set main account Id
+      this.accountId = accounts[0].accountId
     }
   }
 

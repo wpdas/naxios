@@ -14,3 +14,25 @@ export const buildTransaction = <A extends object>(method: string, props: Omit<T
     method,
     ...props,
   } as Transaction<A>)
+
+const NEAR_ACCOUNT_ID_REGEX = /^(?=.{2,64}$)(?!.*\.\.)(?!.*-$)(?!.*_$)[a-z\d._-]+$/i
+
+/**
+ * Check if an address is a valid NEAR address
+ * @param address
+ * @returns
+ */
+export const validateNearAddress = (address: string) => {
+  let isValid = NEAR_ACCOUNT_ID_REGEX.test(address)
+  if (address.length < 64 && (!address.endsWith('.near') || !address.endsWith('.testnet'))) {
+    isValid = false
+  }
+  return isValid
+}
+
+/**
+ * Calculate required deposit for data being stored. (~0.00001N per byte) with a bit extra for buffer
+ * @param data
+ * @returns
+ */
+export const calculateDepositByDataSize = (data: {}) => (JSON.stringify(data).length * 0.00003).toString()
