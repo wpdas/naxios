@@ -363,7 +363,3 @@ console.log(calculateDepositByDataSize(myData)) // 0.00087 Near (not yocto NEAR)
 ## Contributing
 
 Feel free to open issues or pull requests. For major changes, please open an issue first to discuss what you would like to change.
-
-```
-
-```
