@@ -129,7 +129,7 @@ walletApi.signInModal()
 #### Wallet API Reference
 
 - `accounts`: Signed-in Accounts.
-- `accountId`: main/first signed-in account ID in the accounts list.
+- `accountId`: Main/first signed-in account ID in the accounts list.
 - `contractId`: Contract ID.
 - `initNear`: (This is called automatically. You don't need to call it!) Initializes a connection to the NEAR blockchain.
 - `network`: Current network (`testnet`, `mainnet` or `localnet`).
