@@ -37,14 +37,36 @@ class ContractManager {
     }
   }
 
+  /**
+   * Create a key name based on contractId + method + args
+   * @param method
+   * @param args
+   * @returns
+   */
+  private getCacheKey(method: string, args: Record<string, any>) {
+    let keysValues = ''
+    Object.keys(args || {}).forEach((key) => {
+      keysValues += `:${key}-${args[key]}`
+    })
+
+    const key = `naxios::${this.walletManager.network}:${this.walletManager.contractId}:${method}${keysValues}`
+    return key
+  }
+
   // Build View Method Interface
   private async buildViewInterface<R>(props: BuildViewInterfaceProps) {
+    // Clean up cache: remove all expired items from cache (in memory or local storage)
+    if (this.cache) {
+      await this.cache.cleanUp()
+    }
+
     const { method = '', args = {}, config } = props
+    const cacheKey = this.getCacheKey(method, args)
 
     // Check if there's cached information, if so, returns it
-    // item name is composed of: contractAddress:method
+    // item name is composed of: naxios::testnet:contractAddress:method:arg0-arg0value:arg1-arg1value...
     if (config?.useCache && this.cache) {
-      const cachedData = await this.cache.getItem<R>(`${this.walletManager.contractId}:${method}`)
+      const cachedData = await this.cache.getItem<R>(cacheKey)
 
       if (cachedData) {
         return cachedData
@@ -71,7 +93,7 @@ class ContractManager {
 
     // If cache is avaiable, store data on it
     if (config?.useCache && this.cache) {
-      await this.cache.setItem<R>(`${this.walletManager.contractId}:${method}`, outcome)
+      await this.cache.setItem<R>(cacheKey, outcome)
     }
 
     return outcome
@@ -166,7 +188,7 @@ class ContractManager {
    * @returns
    */
   async view<A extends {}, R>(method: string, props?: ViewMethodArgs<A>, config?: BuildViewInterfaceConfig) {
-    return this.buildViewInterface<R>({ method, args: { ...props }, config })
+    return this.buildViewInterface<R>({ method, args: props?.args || {}, config })
   }
 
   /**

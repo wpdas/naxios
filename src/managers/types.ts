@@ -49,7 +49,7 @@ export type ContractManagerConfig = {
 
 export type BuildViewInterfaceProps = {
   method: string
-  args: {}
+  args: any
   config?: BuildViewInterfaceConfig
 }
 

@@ -2,6 +2,11 @@ export interface CacheI {
   setItem: <T>(key: string, value: T) => Promise<void>
   getItem: <T>(key: string) => Promise<T | null>
   removeItem: (key: string) => Promise<void>
+  /**
+   * Clean up cache: remove all expired items from cache (in memory or local storage)
+   * @returns
+   */
+  cleanUp: () => Promise<void>
 }
 
 export interface Data<T> {

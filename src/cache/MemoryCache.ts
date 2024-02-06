@@ -54,6 +54,21 @@ class MemoryCache implements CacheI {
       resolve()
     })
   }
+
+  cleanUp() {
+    return new Promise<void>((resolve) => {
+      Object.keys(_memoryCache).forEach((key) => {
+        const keyValueData = _memoryCache[key] as Data<any>
+
+        // If expired, remove item from _memoryCache
+        if (Date.now() > keyValueData.expiresAt) {
+          delete _memoryCache[key]
+        }
+      })
+
+      resolve()
+    })
+  }
 }
 
 export default MemoryCache

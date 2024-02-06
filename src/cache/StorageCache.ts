@@ -72,6 +72,32 @@ class StorageCache implements CacheI {
       resolve()
     })
   }
+
+  cleanUp() {
+    return new Promise<void>((resolve) => {
+      if (!isLocalStorageAccessible) {
+        resolve()
+        return
+      }
+
+      const lsSize = localStorage.length
+      for (let i = 0; i < lsSize; i++) {
+        const key = localStorage.key(i)
+        if (key?.includes('naxios::')) {
+          // Get data and parse it
+          const cachedDataStr = localStorage.getItem(key)
+          const cachedData = cachedDataStr ? (JSON.parse(cachedDataStr) as Data<any>) : null
+
+          // If expired, remove item from local storage
+          if (cachedData && Date.now() > cachedData.expiresAt) {
+            localStorage.removeItem(key)
+          }
+        }
+      }
+
+      resolve()
+    })
+  }
 }
 
 export default StorageCache
