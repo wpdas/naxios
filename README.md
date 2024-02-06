@@ -26,6 +26,7 @@
 - Automatic transforms for [JSON](https://www.json.org/json-en.html) data
 - Client side events to tell when the api is ready
 - Helpful react hooks
+- Cache System for contract `view`
 
 ## Installing
 
@@ -89,7 +90,7 @@ You can also invoke a new instance anywhere, anytime with a new configuration if
 // Invoking a Contract API
 import { getContractApi } from '@wpdas/naxios'
 
-// New contract instance
+// New contract instance (This also supports cache)
 const contract = await getContractApi({
   contractId: ANOTHER_CONTRACT_ID,
   network: 'testnet',
@@ -114,11 +115,45 @@ const walletApi = await getWalletApi({
 walletApi.signInModal()
 ```
 
+### Cache System
+
+There are two kinds of cache systems to be used. They are `Memory Cache` and `Storage Cache`.
+
+`Memory Cache`: will be cleared when the app refreshes, as its data lives in memory only. <br/>
+`Storage Cache`: The data will remain even when the browser tab is refreshed. Data is persisted using Local Storage.
+
+When instantiating a cache, you need to provide the `expirationTime` (in seconds). This is used to know when the cache should be returned instead of making a real contract call. When the cache expires, a real call to the contract is made. Each contract's method has its own time of expiration.
+
+```ts
+// web3Api.ts with cache
+import naxios, { StorageCache } from '@wpdas/naxios'
+
+const naxiosInstance = new naxios({
+  contractId: CONTRACT_ID,
+  network: 'testnet',
+  cache: new StorageCache({ expirationTime: 60 }),
+})
+
+export const contractApi = naxiosInstance.contractApi()
+```
+
+Then, to use cached `view`, you can just pass the configuration object saying you want to use cached data.
+
+```ts
+import { contractApi } from './web3Api'
+
+const args: {}
+const config: { useCache: true }
+
+contractApi.view('get_greeting', args, config).then((response) => console.log(response))
+```
+
 #### Contract API Reference
 
 - `view`: Make a read-only call to retrieve information from the network. It has the following parameters:
-  - `method`: Contract's method name
-  - `props?`: an optional parameter with `args` for the contract's method
+  - `method`: Contract's method name.
+  - `props?`: an optional parameter with `args` for the contract's method.
+  - `config?`: currently, this has only the `useCache` prop. When useCache is true, this is going to use non-expired cached data instead of calling the contract's method.
 - `call`: Call a method that changes the contract's state. This is payable. It has the following parameters:
   - `method`: Contract's method name
   - `props?`: an optional parameter with `args` for the contract's method, `gas`, `deposit` to be attached and `callbackUrl` if you want to take the user to a specific page after a transaction succeeds.
@@ -293,8 +328,9 @@ useEffect(() => {
 
 - `ready`: boolean indicating whether the contract API is ready.
 - `view`: Make a read-only call to retrieve information from the network. It has the following parameters:
-  - `method`: Contract's method name
-  - `props?`: an optional parameter with `args` for the contract's method
+  - `method`: Contract's method name.
+  - `props?`: an optional parameter with `args` for the contract's method.
+  - `config?`: currently, this has only the `useCache` prop. When useCache is true, this is going to use non-expired cached data instead of calling the contract's method.
 - `call`: Call a method that changes the contract's state. This is payable. It has the following parameters:
   - `method`: Contract's method name
   - `props?`: an optional parameter with `args` for the contract's method, `gas`, `deposit` to be attached and `callbackUrl` if you want to take the user to a specific page after a transaction succeeds.

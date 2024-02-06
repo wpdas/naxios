@@ -1,4 +1,7 @@
+import MemoryCache from '../cache/MemoryCache'
 import { WalletModuleFactory } from '@near-wallet-selector/core'
+import WalletManager from './wallet-manager'
+import StorageCache from '@lib/cache/StorageCache'
 
 export type ViewMethodArgs<A> = {
   args: A
@@ -37,3 +40,32 @@ export type Config = {
   walletSelectorModules?: WalletModuleFactory[]
   onInit?: () => void
 }
+
+export type ContractManagerConfig = {
+  walletManager: WalletManager
+  onInit?: () => void
+  cache?: MemoryCache | StorageCache
+}
+
+export type BuildViewInterfaceProps = {
+  method: string
+  args: {}
+  config?: BuildViewInterfaceConfig
+}
+
+export type BuildViewInterfaceConfig = {
+  /**
+   * Use cached data (if avaiable and not expired)?
+   */
+  useCache?: boolean
+}
+
+// Naxios Constructor
+export type NaxiosConstructor = {
+  contractId: string
+  network: Network
+  walletSelectorModules?: WalletModuleFactory[]
+  cache?: MemoryCache | StorageCache
+}
+
+export type GetContractApi = NaxiosConstructor

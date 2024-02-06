@@ -3,19 +3,30 @@ import { Transaction as CoreTransaction } from '@near-wallet-selector/core'
 import { NO_DEPOSIT, THIRTY_TGAS } from './constants'
 import { QueryResponseKind } from 'near-api-js/lib/providers/provider'
 import WalletManager from './wallet-manager'
-import { ChangeMethodArgs, Transaction, ViewMethodArgs } from './types'
+import {
+  BuildViewInterfaceConfig,
+  BuildViewInterfaceProps,
+  ChangeMethodArgs,
+  ContractManagerConfig,
+  Transaction,
+  ViewMethodArgs,
+} from './types'
+import MemoryCache from '../cache/MemoryCache'
+import StorageCache from '../cache/StorageCache'
 
 type ResultType = QueryResponseKind & { result: any }
 
 class ContractManager {
   private walletManager: WalletManager
+  private cache?: MemoryCache | StorageCache
 
-  constructor(config: { walletManager: WalletManager; onInit?: () => void }) {
-    this.walletManager = config.walletManager
+  constructor({ walletManager, cache, onInit }: ContractManagerConfig) {
+    this.walletManager = walletManager
+    this.cache = cache
 
     this.init().then(() => {
-      if (config.onInit) {
-        config.onInit()
+      if (onInit) {
+        onInit()
       }
     })
   }
@@ -27,7 +38,20 @@ class ContractManager {
   }
 
   // Build View Method Interface
-  private async buildViewInterface<R>({ method = '', args = {} }) {
+  private async buildViewInterface<R>(props: BuildViewInterfaceProps) {
+    const { method = '', args = {}, config } = props
+
+    // Check if there's cached information, if so, returns it
+    // item name is composed of: contractAddress:method
+    if (config?.useCache && this.cache) {
+      const cachedData = await this.cache.getItem<R>(`${this.walletManager.contractId}:${method}`)
+
+      if (cachedData) {
+        return cachedData
+      }
+    }
+
+    // If there's no cache, go forward...
     if (!this.walletManager.walletSelector) {
       await this.walletManager.initNear()
     }
@@ -43,7 +67,14 @@ class ContractManager {
       finality: 'optimistic',
     })) as ResultType
 
-    return JSON.parse(Buffer.from(res.result).toString()) as R
+    const outcome = JSON.parse(Buffer.from(res.result).toString()) as R
+
+    // If cache is avaiable, store data on it
+    if (config?.useCache && this.cache) {
+      await this.cache.setItem<R>(`${this.walletManager.contractId}:${method}`, outcome)
+    }
+
+    return outcome
   }
 
   // Build Call Method Interface
@@ -131,10 +162,11 @@ class ContractManager {
    * [view] Make a read-only call to retrieve information from the network
    * @param method Contract's method name
    * @param {A} props.args - Function parameters
+   * @param config Additional configuration (cache)
    * @returns
    */
-  async view<A extends {}, R>(method: string, props?: ViewMethodArgs<A>) {
-    return this.buildViewInterface<R>({ method, ...props })
+  async view<A extends {}, R>(method: string, props?: ViewMethodArgs<A>, config?: BuildViewInterfaceConfig) {
+    return this.buildViewInterface<R>({ method, args: { ...props }, config })
   }
 
   /**
