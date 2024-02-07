@@ -281,7 +281,7 @@ walletApi.signInModal()
 ```
 
 <div align="center">
-   <img src="https://3798793431-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fcudid4AoeKizKC6M6ros%2Fuploads%2FjD0nWoQ61lkQeEZwflHy%2FScreenshot%202024-01-11%20at%2009.15.59.png?alt=media&token=90d7edf4-fc7a-4879-916e-f0d2f9cace3f" height="500px" /></a><br>
+   <img src="https://3798793431-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fcudid4AoeKizKC6M6ros%2Fuploads%2FjD0nWoQ61lkQeEZwflHy%2FScreenshot%202024-01-11%20at%2009.15.59.png?alt=media&token=90d7edf4-fc7a-4879-916e-f0d2f9cace3f" height="100%" maxHeight="500px" /></a><br>
 </div>
 
 ### Customizing the Wallets Options for NEAR Wallet Selector
