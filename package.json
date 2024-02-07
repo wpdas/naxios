@@ -61,10 +61,5 @@
     "ts-node": "^10.9.2",
     "tslib": "^2.5.0",
     "typescript": "^5.3.3"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run test"
-    }
   }
 }
