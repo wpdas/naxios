@@ -24,7 +24,10 @@ const NEAR_ACCOUNT_ID_REGEX = /^(?=.{2,64}$)(?!.*\.\.)(?!.*-$)(?!.*_$)[a-z\d._-]
  */
 export const validateNearAddress = (address: string) => {
   let isValid = NEAR_ACCOUNT_ID_REGEX.test(address)
-  if (address.length < 64 && (!address.endsWith('.near') || !address.endsWith('.testnet'))) {
+
+  const finalNearName = address.endsWith('.near') ? '.near' : '.testnet'
+
+  if (address.length > 64 || !address.endsWith(finalNearName)) {
     isValid = false
   }
   return isValid

@@ -2,11 +2,13 @@ import { CacheConstructor, CacheI, Data } from './types'
 
 let isLocalStorageAccessible = true
 
-try {
-  // just try to read it
-  window.localStorage
-} catch (error) {
-  isLocalStorageAccessible = false
+if (process.env.NODE_ENV !== 'test') {
+  try {
+    // just try to read it
+    window.localStorage
+  } catch (error) {
+    isLocalStorageAccessible = false
+  }
 }
 
 /**
