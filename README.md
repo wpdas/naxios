@@ -90,7 +90,7 @@ export const greetingContractApi = naxiosInstance.contractApi({
 })
 ```
 
-#### Openning the Sign-in Wallet Selector Modal
+#### Opening the Sign-in Wallet Selector Modal
 
 You can open up the NEAR Wallet Selector modal by calling `signInModal()`:
 
