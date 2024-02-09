@@ -30,7 +30,7 @@ class naxios {
    * @returns
    */
   walletApi() {
-    return this.walletManager as Omit<typeof this.walletManager, 'changeWalletStatus' | 'status' | 'initNear'>
+    return this.walletManager as Omit<typeof this.walletManager, 'changeWalletStatus' | 'status'>
   }
 
   /**

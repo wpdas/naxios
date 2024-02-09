@@ -13,7 +13,6 @@
 - [Features](#features)
 - [Installing](#installing)
 - [How to Use](#how-to-use)
-- [React Hooks](#react-hooks)
 - [Utils](#utils)
 - [Contributing](#contributing)
 
@@ -60,92 +59,35 @@ It's super easy to get a Wallet and/or Contract API in place all at once. Take a
 // web3Api.ts
 import naxios from '@wpdas/naxios'
 
-const naxiosApi = new naxios({
-  contractId: CONTRACT_ID,
-  network: 'testnet', // or mainnet, localnet
-})
-
-// (optional)
-const onContractInitHandler = () => {
-  console.log('Contract is ready!')
-}
-const onWalletInitHandler = () => {
-  console.log('Wallet is ready!')
-}
-
-/**
- * NEAR Contract API
- */
-export const contractApi = naxiosInstance.contractApi(onContractInitHandler)
-
-/**
- * NEAR Wallet API
- */
-export const walletApi = naxiosInstance.walletApi(onWalletInitHandler)
-```
-
-You can also invoke a new instance anywhere, anytime with a new configuration if you wish:
-
-```ts
-// Invoking a Contract API
-import { getContractApi } from '@wpdas/naxios'
-
-// New contract instance (This also supports cache)
-const contract = await getContractApi({
-  contractId: ANOTHER_CONTRACT_ID,
-  network: 'testnet',
-})
-
-const response = await contract.view('get_users', {
-  args: { limit: 5 },
-})
-```
-
-```ts
-// Invoking a Wallet API
-import { getWalletApi } from '@wpdas/naxios'
-
-// New wallet instance
-const walletApi = await getWalletApi({
-  contractId: ANOTHER_CONTRACT_ID,
-  network: 'testnet',
-})
-
-// Open up the Signin Wallet Modal
-walletApi.signInModal()
-```
-
-### Cache System
-
-There are two kinds of cache systems to be used. They are `Memory Cache` and `Storage Cache`.
-
-`Memory Cache`: will be cleared when the app refreshes, as its data lives in memory only. <br/>
-`Storage Cache`: The data will remain even when the browser tab is refreshed. Data is persisted using Local Storage.
-
-When instantiating a cache, you need to provide the `expirationTime` (in seconds). This is used to know when the cache should be returned instead of making a real contract call. When the cache expires, a real call to the contract is made. Each contract's method has its own time of expiration.
-
-```ts
-// web3Api.ts with cache
-import naxios, { StorageCache } from '@wpdas/naxios'
-
 const naxiosInstance = new naxios({
   contractId: CONTRACT_ID,
   network: 'testnet',
-  cache: new StorageCache({ expirationTime: 60 }),
 })
 
+/**
+ * NEAR Wallet API (Must be a single instance)
+ */
+export const walletApi = naxiosInstance.walletApi()
+
+// Examples of contract API instance usage
+
+/**
+ * Contract API
+ * This is going to use default contractId (CONTRACT_ID)
+ */
 export const contractApi = naxiosInstance.contractApi()
-```
 
-Then, to use cached `view`, you can just pass the configuration object saying you want to use cached data.
+/**
+ * Another Contract API
+ */
+export const socialDBcontractApi = naxiosInstance.contractApi({ contractId: 'v1.social08.testnet' })
 
-```ts
-import { contractApi } from './web3Api'
-
-const args: {}
-const config: { useCache: true }
-
-contractApi.view('get_greeting', args, config).then((response) => console.log(response))
+/**
+ * Greeting Contract API
+ */
+export const greetingContractApi = naxiosInstance.contractApi({
+  contractId: 'dev-1692221685438-15421910364142',
+})
 ```
 
 #### Contract API Reference
@@ -177,10 +119,10 @@ contractApi.view('get_greeting', args, config).then((response) => console.log(re
 Using a `view` method is free.
 
 ```ts
-import { contractApi } from './web3Api'
+import { greetingContractApi } from './web3Api'
 
-contractApi.view('get_greeting').then((response) => console.log(response))
-// Hi
+// [free]
+greetingContractApi.view<string>('get_greeting').then((response) => console.log(response))
 ```
 
 ### Contract Call
@@ -188,10 +130,11 @@ contractApi.view('get_greeting').then((response) => console.log(response))
 You need to pay for every request you make for a `call` method. This is going to change data and store it within the blockchain.
 
 ```ts
-import { contractApi } from './web3Api'
+import { greetingContractApi } from './web3Api'
 
-// [payable]
-contractApi.call('set_greeting', { greeting: 'Hello my dear!' }).then(() => console.log('Done!'))
+// Set greeting [payable]
+const args: { message: 'Hi there!!!' }
+greetingContractApi.call<string | undefined>('set_greeting', args).then((response) => console.log(response || 'done!'))
 ```
 
 ### Contract Multiple Calls at Once
@@ -218,56 +161,39 @@ const callbackUrl = 'https://my-page.com/callback-success'
 contractApi.callMultiple([transactionA, transactionB, transactionC], callbackUrl).then(() => console.log('Done!'))
 ```
 
-### Contract Interface
+### Cache System
 
-It's a good practice to create a Contract Interface while building your app, so that, everyone knows what to input and what to get at the end.
+There are two kinds of cache systems to be used. They are `Memory Cache` and `Storage Cache`.
+
+`Memory Cache`: will be cleared when the app refreshes, as its data lives in memory only. <br/>
+`Storage Cache`: The data will remain even when the browser tab is refreshed. Data is persisted using Local Storage.
+
+When instantiating a cache, you need to provide the `expirationTime` (in seconds). This is used to know when the cache should be returned instead of making a real contract call. When the cache expires, a real call to the contract is made. Each contract's method has its own time of expiration.
 
 ```ts
-// contract-interface.ts
-import { contractApi } from './web3Api'
+// web3Api.ts
+import naxios, { StorageCache } from '@wpdas/naxios'
 
-// Get greeting request
-type EmptyInput = {}
-type GetGreetingResponse = string
-export const get_greeting = () => contractApi.view<EmptyInput, GetGreetingResponse>('get_greeting')
+// ...
 
-// [payable]
-// Set greeting request
-type SetGreetingInput = { greeting: string }
-type SetGreetingResponse = string // current greeting
-export const set_greeting = (args: SetGreetingInput) =>
-  contractApi.call<typeof args, SetGreetingResponse>('set_greeting', { args })
+/**
+ * Cached - Greeting Contract API
+ */
+export const cachedGreetingContractApi = naxiosInstance.contractApi({
+  contractId: 'dev-1692221685438-15421910364142',
+  cache: new StorageCache({ expirationTime: 5 * 60 }), // 5 minutes
+})
 ```
 
-Then, you can just call it over your app like:
+Then, to use cached `view`, you can just pass the configuration object saying you want to use cached data.
 
 ```ts
-import { useState, useEffect, useCallback } from 'react'
-import { get_greeting, set_greeting } from './contract-interface'
+import { cachedGreetingContractApi } from './web3Api'
 
-const App = () => {
-  const [greeting, setGreeting] = useState('')
-
-  // Loads the last stored greeting
-  useEffect(() => {
-    ;(async () => {
-      const storedGreeting = await get_greeting()
-      setGreeting(storedGreeting)
-    })()
-  }, [])
-
-  // Persist a new greeting message
-  const persistNewGreetingHandler = useCallback(async () => {
-    await set_greeting({ greeting: 'Hello my dear!!!' })
-    console.log('Done!')
-  }, [])
-
-  return (
-    <>
-      <button onClick={persistNewGreetingHandler}>Save new greeting</button>
-    </>
-  )
-}
+// Fetch Greetings [free]
+const args: {}
+const config: { useCache: true }
+cachedGreetingContractApi.view<string>('get_greeting', args, config).then((response) => console.log(response))
 ```
 
 ### Open Up the Sign-in Wallet Selector Modal
@@ -307,62 +233,6 @@ const naxiosApi = new naxios({
 ```
 
 Find out all the NEAR wallet selectors here: [**NEAR Wallet Selector**](https://github.com/near/wallet-selector)
-
-## React Hooks
-
-#### `useContract`
-
-The `useContract` hook initializes a connection to the NEAR Blockchain and provides access to the contractApi instance.
-
-```tsx
-const contract = useContract({ contractId: CONTRACT_ID, network: 'testnet' })
-
-useEffect(() => {
-  if (contract.ready) {
-    contract.view('get_greeting').then((response) => console.log(response)) // Hi
-  }
-}, [contract])
-```
-
-#### API
-
-- `ready`: boolean indicating whether the contract API is ready.
-- `view`: Make a read-only call to retrieve information from the network. It has the following parameters:
-  - `method`: Contract's method name.
-  - `props?`: an optional parameter with `args` for the contract's method.
-  - `config?`: currently, this has only the `useCache` prop. When useCache is true, this is going to use non-expired cached data instead of calling the contract's method.
-- `call`: Call a method that changes the contract's state. This is payable. It has the following parameters:
-  - `method`: Contract's method name
-  - `props?`: an optional parameter with `args` for the contract's method, `gas`, `deposit` to be attached and `callbackUrl` if you want to take the user to a specific page after a transaction succeeds.
-- `callMultiple`: Call multiple methods that change the contract's state. This is payable and has the following parameters:
-  - `transactionsList`: A list of Transaction props. You can use `buildTransaction(...)` to help you out
-  - `callbackUrl?`: A page to take the user to after all the transactions succeed.
-
-<!-- To add a separator line -->
-
-##
-
-<!-- To add a separator line -->
-
-#### `useWallet`
-
-The `useWallet` hook initializes a connection to the NEAR Blockchain and provides access to the walletApi instance.
-
-```tsx
-const wallet = useWallet({ contractId: CONTRACT_ID, network: 'testnet' })
-
-useEffect(() => {
-  if (wallet.ready) {
-    console.log(wallet.walletApi?.accounts)
-    // [{accountId: 'user.testnet', publicKey: 'ed25519:aaaaaaaa'}, {...}]
-  }
-}, [wallet])
-```
-
-#### API
-
-- `ready`: boolean indicating whether the wallet API is ready.
-- `walletApi`: Wallet API. See its [API Reference here](#wallet-api-reference).
 
 ## Utils
 

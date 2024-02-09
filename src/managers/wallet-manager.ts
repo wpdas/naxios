@@ -87,7 +87,10 @@ export class WalletManager {
     this.selectedWalletId = walletState.selectedWalletId
   }
 
-  // Init Near => To be called when the website loads
+  /**
+   * Init Near. To be called when the website loads.
+   * This is called automatically when there's any contract interaction.
+   */
   async initNear() {
     const nearConfig = configsList[this.network]()
 
