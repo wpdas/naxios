@@ -90,6 +90,44 @@ export const greetingContractApi = naxiosInstance.contractApi({
 })
 ```
 
+#### Openning the Sign-in Wallet Selector Modal
+
+You can open up the NEAR Wallet Selector modal by calling `signInModal()`:
+
+```ts
+import { walletApi } from './web3Api'
+
+walletApi.signInModal()
+```
+
+<div align="center">
+   <img src="https://3798793431-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fcudid4AoeKizKC6M6ros%2Fuploads%2FjD0nWoQ61lkQeEZwflHy%2FScreenshot%202024-01-11%20at%2009.15.59.png?alt=media&token=90d7edf4-fc7a-4879-916e-f0d2f9cace3f" height="100%" maxHeight="500px" /></a><br>
+</div>
+
+#### Customizing the Wallets Options for NEAR Wallet Selector
+
+By default, naxios only uses **@near-wallet-selector/my-near-wallet** as a means of connecting the wallet. However, you can add other wallet selectors as follows:
+
+```sh
+npm install @near-wallet-selector/ledger @near-wallet-selector/my-near-wallet
+```
+
+Then, you can start naxius as follows:
+
+```ts
+import naxios from '@wpdas/naxios'
+import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet'
+import { setupLedger } from '@near-wallet-selector/ledger'
+
+const naxiosInstance = new naxios({
+  contractId: CONTRACT_ID,
+  network: 'testnet', // or mainnet, localnet
+  walletSelectorModules: [setupMyNearWallet(), setupLedger()],
+})
+```
+
+Find out all the NEAR wallet selectors here: [**NEAR Wallet Selector**](https://github.com/near/wallet-selector)
+
 #### Contract API Reference
 
 - `view`: Make a read-only call to retrieve information from the network. It has the following parameters:
@@ -108,8 +146,10 @@ export const greetingContractApi = naxiosInstance.contractApi({
 - `accounts`: Signed-in Accounts.
 - `accountId`: Main/first signed-in account ID in the accounts list.
 - `contractId`: Contract ID.
-- `initNear`: (This is called automatically. You don't need to call it!) Initializes a connection to the NEAR blockchain.
+- `initNear`: Initializes a connection to the NEAR blockchain. This is called automatically when there's any contract interaction.
 - `network`: Current network (`testnet`, `mainnet` or `localnet`).
+- `recentlySignedInWallets`: Returns ID-s of 5 recently signed in wallets.
+- `selectedWalletId`: Selected Wallet Id
 - `signInModal`: Open up the Signin Wallet Modal.
 - `wallet`: Wallet instance.
 - `walletSelector`: WalletSelector instance.
@@ -195,44 +235,6 @@ const args: {}
 const config: { useCache: true }
 cachedGreetingContractApi.view<string>('get_greeting', args, config).then((response) => console.log(response))
 ```
-
-### Open Up the Sign-in Wallet Selector Modal
-
-You can open up the NEAR Wallet Selector modal by calling `signInModal()`:
-
-```ts
-import { walletApi } from './web3Api'
-
-walletApi.signInModal()
-```
-
-<div align="center">
-   <img src="https://3798793431-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2Fcudid4AoeKizKC6M6ros%2Fuploads%2FjD0nWoQ61lkQeEZwflHy%2FScreenshot%202024-01-11%20at%2009.15.59.png?alt=media&token=90d7edf4-fc7a-4879-916e-f0d2f9cace3f" height="100%" maxHeight="500px" /></a><br>
-</div>
-
-### Customizing the Wallets Options for NEAR Wallet Selector
-
-By default, naxios only uses **@near-wallet-selector/my-near-wallet** as a means of connecting the wallet. However, you can add other wallet selectors as follows:
-
-```sh
-npm install @near-wallet-selector/ledger @near-wallet-selector/my-near-wallet
-```
-
-Then, you can start naxius as follows:
-
-```ts
-import naxios from '@wpdas/naxios'
-import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet'
-import { setupLedger } from '@near-wallet-selector/ledger'
-
-const naxiosApi = new naxios({
-  contractId: CONTRACT_ID,
-  network: 'testnet', // or mainnet, localnet
-  walletSelectorModules: [setupMyNearWallet(), setupLedger()],
-})
-```
-
-Find out all the NEAR wallet selectors here: [**NEAR Wallet Selector**](https://github.com/near/wallet-selector)
 
 ## Utils
 
