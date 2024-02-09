@@ -13,26 +13,23 @@ import {
 } from './types'
 import MemoryCache from '../cache/MemoryCache'
 import StorageCache from '../cache/StorageCache'
+import { pollingAsyncCall } from '..'
 
 type ResultType = QueryResponseKind & { result: any }
 
 class ContractManager {
   private walletManager: WalletManager
   private cache?: MemoryCache | StorageCache
+  private contractId: string
 
-  constructor({ walletManager, cache, onInit }: ContractManagerConfig) {
+  constructor({ walletManager, cache, contractId }: ContractManagerConfig) {
     this.walletManager = walletManager
     this.cache = cache
-
-    this.init().then(() => {
-      if (onInit) {
-        onInit()
-      }
-    })
+    this.contractId = contractId || walletManager.contractId
   }
 
-  private async init() {
-    if (!this.walletManager.wallet) {
+  private async checkWallet() {
+    if (this.walletManager.status === 'pending' || !this.walletManager.wallet) {
       await this.walletManager.initNear()
     }
   }
@@ -49,7 +46,7 @@ class ContractManager {
       keysValues += `:${key}-${args[key]}`
     })
 
-    const key = `naxios::${this.walletManager.network}:${this.walletManager.contractId}:${method}${keysValues}`
+    const key = `naxios::${this.walletManager.network}:${this.contractId}:${method}${keysValues}`
     return key
   }
 
@@ -72,10 +69,17 @@ class ContractManager {
         return cachedData
       }
     }
-
     // If there's no cache, go forward...
-    if (!this.walletManager.walletSelector) {
-      await this.walletManager.initNear()
+
+    // Check if wallet is ready
+    if (this.walletManager.status !== 'ready') {
+      // If not, wait till this is ready to proceed
+      await pollingAsyncCall(
+        () => {
+          return Promise.resolve(this.walletManager.status)
+        },
+        (result) => result === 'ready'
+      )
     }
 
     const { network } = this.walletManager.walletSelector.options
@@ -83,7 +87,7 @@ class ContractManager {
 
     const res = (await provider.query({
       request_type: 'call_function',
-      account_id: this.walletManager.contractId,
+      account_id: this.contractId,
       method_name: method,
       args_base64: Buffer.from(JSON.stringify(args)).toString('base64'),
       finality: 'optimistic',
@@ -119,24 +123,28 @@ class ContractManager {
     const { accountId } = this.walletManager.accounts[0]
 
     // Sign a transaction with the "FunctionCall" action
-    const outcome = await this.walletManager.wallet!.signAndSendTransaction({
-      signerId: accountId,
-      receiverId: this.walletManager.contractId,
-      callbackUrl,
-      actions: [
-        {
-          type: 'FunctionCall',
-          params: {
-            methodName: method,
-            args,
-            gas,
-            deposit,
+    try {
+      const outcome = await this.walletManager.wallet!.signAndSendTransaction({
+        signerId: accountId,
+        receiverId: this.contractId,
+        callbackUrl,
+        actions: [
+          {
+            type: 'FunctionCall',
+            params: {
+              methodName: method,
+              args,
+              gas,
+              deposit,
+            },
           },
-        },
-      ],
-    })
+        ],
+      })
 
-    return Promise.resolve(providers.getTransactionLastResult(outcome as providers.FinalExecutionOutcome) as R)
+      return Promise.resolve(providers.getTransactionLastResult(outcome as providers.FinalExecutionOutcome) as R)
+    } catch (error) {
+      return Promise.reject(error)
+    }
   }
 
   // Build Call Multi Method
@@ -157,7 +165,7 @@ class ContractManager {
     transactionsList.forEach((transaction) => {
       transactions.push({
         signerId: accountId,
-        receiverId: transaction.receiverId || this.walletManager.contractId,
+        receiverId: transaction.receiverId || this.contractId,
         actions: [
           {
             type: 'FunctionCall',
@@ -188,6 +196,7 @@ class ContractManager {
    * @returns
    */
   async view<A extends {}, R>(method: string, props?: ViewMethodArgs<A>, config?: BuildViewInterfaceConfig) {
+    await this.checkWallet()
     return this.buildViewInterface<R>({ method, args: props?.args || {}, config })
   }
 
@@ -200,6 +209,7 @@ class ContractManager {
    * @returns
    */
   async call<A extends {}, R>(method: string, props?: ChangeMethodArgs<A>) {
+    await this.checkWallet()
     return this.buildCallInterface<R>({ method, ...props })
   }
 
@@ -210,6 +220,7 @@ class ContractManager {
    * @returns
    */
   async callMultiple<A extends object>(transactionsList: Transaction<A>[], callbackUrl?: string) {
+    await this.checkWallet()
     return this.buildCallMultiMethod<A>(transactionsList, callbackUrl)
   }
 }

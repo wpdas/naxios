@@ -8,7 +8,7 @@ import {
   WalletSelector,
 } from '@near-wallet-selector/core'
 import { setupModal } from '@near-wallet-selector/modal-ui'
-import { Config, Network } from './types'
+import { WalletManagerConfig, Network, WalletStatus } from './types'
 
 const getTestnetConfig = () => ({
   networkId: 'testnet',
@@ -42,8 +42,14 @@ export class WalletManager {
   network!: Network
   walletSelector!: WalletSelector
   wallet!: Wallet | undefined
+  status: WalletStatus = 'pending'
+  /**
+   * Returns ID-s of 5 recently signed in wallets.
+   */
+  recentlySignedInWallets: string[] = []
+  selectedWalletId: string | null = null
 
-  constructor(config: Config) {
+  constructor(config: WalletManagerConfig) {
     this.contractId = config.contractId
     this.network = config.network
 
@@ -51,11 +57,34 @@ export class WalletManager {
       this.walletSelectorModules = config.walletSelectorModules
     }
 
+    this.changeWalletStatus('pending')
+
     this.initNear().then(() => {
       if (config.onInit) {
         config.onInit()
       }
     })
+  }
+
+  changeWalletStatus(status: WalletStatus) {
+    this.status = status
+  }
+
+  private async setupData() {
+    // Initialize Wallet
+    const wallet = await this.walletSelector.wallet()
+    this.wallet = wallet
+
+    const walletState = this.walletSelector.store.getState()
+    const accounts = walletState.accounts
+    this.accounts = accounts
+
+    // Set main account Id
+    this.accountId = accounts[0].accountId
+
+    // Others
+    this.recentlySignedInWallets = walletState.recentlySignedInWallets
+    this.selectedWalletId = walletState.selectedWalletId
   }
 
   // Init Near => To be called when the website loads
@@ -71,15 +100,13 @@ export class WalletManager {
 
     // Initialize Wallet
     if (walletSelector.isSignedIn()) {
-      const wallet = await walletSelector.wallet()
-      this.wallet = wallet
-
-      const accounts = await wallet.getAccounts()
-      this.accounts = accounts
-
-      // Set main account Id
-      this.accountId = accounts[0].accountId
+      await this.setupData()
+    } else {
+      // Setup data on user sign in
+      walletSelector.on('signedIn', this.setupData)
     }
+
+    this.changeWalletStatus('ready')
   }
 
   async signInModal() {

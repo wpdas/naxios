@@ -9,7 +9,9 @@ describe('contractApi -> view method', () => {
       network: 'mainnet',
     })
 
-    const contractApi = naxiosInstance.contractApi(async () => {
+    const contractApi = naxiosInstance.contractApi()
+
+    ;(async () => {
       try {
         const response: any = await contractApi.view('get', {
           args: { keys: ['wendersonpires.near/profile/**'] },
@@ -20,7 +22,7 @@ describe('contractApi -> view method', () => {
       } catch (error) {
         done(error)
       }
-    })
+    })()
   })
 
   it("Cached view contract's method", (done) => {
@@ -29,12 +31,13 @@ describe('contractApi -> view method', () => {
     const naxiosInstance = new naxios({
       contractId: 'social.near',
       network: 'mainnet',
-      cache,
     })
 
     const cacheKey = 'naxios::mainnet:social.near:get:keys-wendersonpires.near/profile/**'
 
-    const contractApi = naxiosInstance.contractApi(async () => {
+    const contractApi = naxiosInstance.contractApi({ cache })
+
+    ;(async () => {
       try {
         const response: any = await contractApi.view(
           'get',
@@ -53,6 +56,6 @@ describe('contractApi -> view method', () => {
       } catch (error) {
         done(error)
       }
-    })
+    })()
   })
 })

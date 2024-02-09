@@ -34,7 +34,8 @@ export type Transaction<A> = {
 }
 
 export type Network = 'mainnet' | 'testnet' | 'localnet'
-export type Config = {
+
+export type WalletManagerConfig = {
   contractId: string
   network: Network
   walletSelectorModules?: WalletModuleFactory[]
@@ -43,7 +44,7 @@ export type Config = {
 
 export type ContractManagerConfig = {
   walletManager: WalletManager
-  onInit?: () => void
+  contractId?: string
   cache?: MemoryCache | StorageCache
 }
 
@@ -65,7 +66,19 @@ export type NaxiosConstructor = {
   contractId: string
   network: Network
   walletSelectorModules?: WalletModuleFactory[]
+  // cache?: MemoryCache | StorageCache
+  onInit?: () => void
+}
+
+export type ContractApi = {
+  /**
+   * Custom contract id. If not set, wallet's contract id (set during naxios instantiation) is going to be used
+   */
+  contractId?: string
+  /**
+   * Cache system
+   */
   cache?: MemoryCache | StorageCache
 }
 
-export type GetContractApi = NaxiosConstructor
+export type WalletStatus = 'pending' | 'connecting' | 'ready'
