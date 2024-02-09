@@ -124,6 +124,11 @@ const naxiosInstance = new naxios({
   network: 'testnet', // or mainnet, localnet
   walletSelectorModules: [setupMyNearWallet(), setupLedger()],
 })
+
+/**
+ * NEAR Wallet API (Must be a single instance)
+ */
+export const walletApi = naxiosInstance.walletApi()
 ```
 
 Find out all the NEAR wallet selectors here: [**NEAR Wallet Selector**](https://github.com/near/wallet-selector)
