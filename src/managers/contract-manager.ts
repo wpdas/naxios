@@ -18,11 +18,13 @@ import { pollingAsyncCall } from '..'
 type ResultType = QueryResponseKind & { result: any }
 
 class ContractManager {
+  private rpcNodeUrl?: ContractManagerConfig['rpcNodeUrl']
   private walletManager: WalletManager
   private cache?: MemoryCache | StorageCache
   private contractId: string
 
-  constructor({ walletManager, cache, contractId }: ContractManagerConfig) {
+  constructor({ rpcNodeUrl, walletManager, cache, contractId }: ContractManagerConfig) {
+    this.rpcNodeUrl = rpcNodeUrl
     this.walletManager = walletManager
     this.cache = cache
     this.contractId = contractId || walletManager.contractId
@@ -83,7 +85,7 @@ class ContractManager {
     }
 
     const { network } = this.walletManager.walletSelector.options
-    const provider = new providers.JsonRpcProvider({ url: network.nodeUrl })
+    const provider = new providers.JsonRpcProvider({ url: this.rpcNodeUrl ?? network.nodeUrl })
 
     const res = (await provider.query({
       request_type: 'call_function',
