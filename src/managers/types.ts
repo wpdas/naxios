@@ -43,6 +43,10 @@ export type WalletManagerConfig = {
 }
 
 export type ContractManagerConfig = {
+  /**
+   * A custom RPC endpoint URl.
+   */
+  rpcNodeUrl?: string
   walletManager: WalletManager
   contractId?: string
   cache?: MemoryCache | StorageCache
@@ -62,7 +66,7 @@ export type BuildViewInterfaceConfig = {
 }
 
 // Naxios Constructor
-export type NaxiosConstructor = {
+export type NaxiosConstructor = Pick<ContractManagerConfig, 'rpcNodeUrl'> & {
   contractId: string
   network: Network
   walletSelectorModules?: WalletModuleFactory[]

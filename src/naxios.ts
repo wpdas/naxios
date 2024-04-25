@@ -5,14 +5,17 @@ import WalletManager from './managers/wallet-manager'
 import { NaxiosConstructor, Network, ContractApi } from './managers/types'
 
 class naxios {
+  private rpcNodeUrl?: ContractManager['rpcNodeUrl']
   private contractId: string
   private network: Network
   private walletSelectorModules: WalletModuleFactory[] = [setupMyNearWallet()]
   private walletManager!: WalletManager
 
   constructor(config: NaxiosConstructor) {
+    this.rpcNodeUrl = config.rpcNodeUrl
     this.contractId = config.contractId
     this.network = config.network
+
     if (config.walletSelectorModules) {
       this.walletSelectorModules = config.walletSelectorModules
     }
@@ -39,6 +42,7 @@ class naxios {
    */
   contractApi(config?: ContractApi) {
     return new ContractManager({
+      rpcNodeUrl: this.rpcNodeUrl,
       walletManager: this.walletManager,
       contractId: config?.contractId,
       cache: config?.cache,
