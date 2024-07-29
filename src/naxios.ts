@@ -3,6 +3,7 @@ import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet'
 import ContractManager from './managers/contract-manager'
 import WalletManager from './managers/wallet-manager'
 import { NaxiosConstructor, Network, ContractApi } from './managers/types'
+import { isClient } from './utils/isClient'
 
 class naxios {
   private rpcNodeUrl?: ContractManager['rpcNodeUrl']
@@ -15,6 +16,11 @@ class naxios {
     this.rpcNodeUrl = config.rpcNodeUrl
     this.contractId = config.contractId
     this.network = config.network
+
+    // Ensure it is going to run on client side only
+    if (!isClient()) {
+      return
+    }
 
     if (config.walletSelectorModules) {
       this.walletSelectorModules = config.walletSelectorModules
