@@ -9,6 +9,7 @@ import {
 } from '@near-wallet-selector/core'
 import { setupModal } from '@near-wallet-selector/modal-ui'
 import { WalletManagerConfig, Network, WalletStatus } from './types'
+import { isClient } from '../utils/isClient'
 
 const getTestnetConfig = () => ({
   networkId: 'testnet',
@@ -55,6 +56,11 @@ export class WalletManager {
 
     if (config.walletSelectorModules) {
       this.walletSelectorModules = config.walletSelectorModules
+    }
+
+    // Ensure it is going to run on client side only
+    if (!isClient()) {
+      return
     }
 
     this.changeWalletStatus('pending')

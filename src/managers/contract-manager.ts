@@ -97,7 +97,7 @@ class ContractManager {
 
     const outcome = JSON.parse(Buffer.from(res.result).toString()) as R
 
-    // If cache is avaiable, store data on it
+    // If cache is available, store data on it
     if (config?.useCache && this.cache) {
       await this.cache.setItem<R>(cacheKey, outcome)
     }
