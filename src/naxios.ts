@@ -4,6 +4,7 @@ import ContractManager from './managers/contract-manager'
 import WalletManager from './managers/wallet-manager'
 import { NaxiosConstructor, Network, ContractApi } from './managers/types'
 import { isClient } from './utils/isClient'
+import RPCProviderManager from './managers/rpc-provider-manager'
 
 class naxios {
   private rpcNodeUrl?: ContractManager['rpcNodeUrl']
@@ -53,6 +54,15 @@ class naxios {
       contractId: config?.contractId,
       cache: config?.cache,
     })
+  }
+
+  /**
+   * NEAR RPC API - Provider
+   * https://docs.near.org/api/rpc/introduction
+   * @returns
+   */
+  rpcApi() {
+    return new RPCProviderManager({ rpcNodeUrl: this.rpcNodeUrl, network: this.network }).provider
   }
 }
 

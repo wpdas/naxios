@@ -89,6 +89,11 @@ export const socialDBcontractApi = naxiosInstance.contractApi({ contractId: 'v1.
 export const greetingContractApi = naxiosInstance.contractApi({
   contractId: 'dev-1692221685438-15421910364142',
 })
+
+/**
+ * NEAR RPC API
+ */
+export const rpcApi = naxiosInstance.rpcApi()
 ```
 
 #### Opening the Sign-in Wallet Selector Modal
@@ -242,6 +247,23 @@ const config: { useCache: true }
 cachedGreetingContractApi.view<string>('get_greeting', args, config).then((response) => console.log(response))
 ```
 
+### NEAR RPC API
+
+Naxios also provides access to the NEAR RPC API, so that you can query any data you want. Visit [**NEAR RPC API Docs**](https://docs.near.org/api/rpc/introduction) to get to know how to use it.
+
+```ts
+import { rpcApi } from './web3Api'
+
+// Viewing account using Near RPC API
+rpcApi
+  .query({
+    request_type: 'view_account',
+    finality: 'final',
+    account_id: 'wendersonpires.near',
+  })
+  .then((data) => console.log('Account Data:', data))
+```
+
 ## Utils
 
 #### `buildTransaction`
@@ -272,6 +294,20 @@ import { calculateDepositByDataSize } from '@wpdas/naxios'
 
 const myData = { age: 22, name: 'user name' }
 console.log(calculateDepositByDataSize(myData)) // 0.00087 Near (not yocto NEAR)
+```
+
+#### `isClient`
+
+Simple checker to say if this is running on server or client.
+
+```ts
+import { isClient } from '@wpdas/naxios'
+
+if (isClient()) {
+  console.log('Hi from client')
+} else {
+  console.log('Hi from server')
+}
 ```
 
 ## Contributing

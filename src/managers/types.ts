@@ -42,6 +42,14 @@ export type WalletManagerConfig = {
   onInit?: () => void
 }
 
+export type RPCProviderManagerConfig = {
+  /**
+   * A custom RPC endpoint URl.
+   */
+  rpcNodeUrl?: string
+  network: Network
+}
+
 export type ContractManagerConfig = {
   /**
    * A custom RPC endpoint URl.
