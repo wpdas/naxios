@@ -2,7 +2,7 @@
    <img src="https://raw.githubusercontent.com/wpdas/naxios/HEAD/md/naxios-logo.png" height="70px" /></a><br>
 </div>
 
-<p align="center">Promise based NEAR Contract and NEAR Wallet client for browser. This was designed to facilitate the React integration with NEAR Blockchain and avoid the huge boilerplate of setting up a wallet and contract.</p>
+<p align="center">Promise based NEAR Contract, NEAR Wallet, and NEAR RPC Client for browser. This was designed to facilitate the React integration with NEAR Blockchain and avoid the huge boilerplate of setting up a wallet and contract.</p>
 
 <p align="center">
     <a href="https://wpdas.gitbook.io/naxios/"><b>Documentation</b></a>
