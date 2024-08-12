@@ -249,7 +249,7 @@ cachedGreetingContractApi.view<string>('get_greeting', args, config).then((respo
 
 ### NEAR RPC API
 
-Naxios also provides access to the NEAR RPC API, so that you can query any data you want. Visit [**NEAR RPC API Docs**](https://docs.near.org/api/rpc/introduction) to get to know how to use it.
+Naxios also provides access to the NEAR RPC API, so that you can query any data you want. Visit [**NEAR RPC API Docs**](https://docs.near.org/api/rpc/introduction) to learn how to use it.
 
 ```ts
 import { rpcApi } from './web3Api'
