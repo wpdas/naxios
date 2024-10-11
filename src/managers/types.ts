@@ -1,7 +1,7 @@
 import MemoryCache from '../cache/MemoryCache'
 import { WalletModuleFactory } from '@near-wallet-selector/core'
 import WalletManager from './wallet-manager'
-import StorageCache from '@lib/cache/StorageCache'
+import StorageCache from '../cache/StorageCache'
 
 export type ViewMethodArgs<A> = {
   args: A
