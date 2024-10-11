@@ -32,13 +32,15 @@
 Using npm:
 
 ```bash
-npm install @wpdas/naxios @near-wallet-selector/modal-ui@8.9.1
+# You can use any wallet selector version you want
+npm install @wpdas/naxios @near-wallet-selector/modal-ui@8.9.13
 ```
 
 Using yarn:
 
 ```bash
-yarn add @wpdas/naxios @near-wallet-selector/modal-ui@8.9.1
+# You can use any wallet selector version you want
+yarn add @wpdas/naxios @near-wallet-selector/modal-ui@8.9.13
 ```
 
 ## How to Use
