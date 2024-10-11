@@ -77,7 +77,10 @@ export type BuildViewInterfaceConfig = {
 export type NaxiosConstructor = Pick<ContractManagerConfig, 'rpcNodeUrl'> & {
   contractId: string
   network: Network
-  walletSelectorModules?: WalletModuleFactory[]
+  // INFO: included since version 2.2.3 to support the new WalletModuleFactory<Type> type
+  walletSelectorModules?: any[]
+  // INFO: removed since version 2.2.3 (version 2.2.1 and 2.2.1 was using a different version of this WalletModuleFactory)
+  // walletSelectorModules?: WalletModuleFactory[]
   // cache?: MemoryCache | StorageCache
   onInit?: () => void
 }
