@@ -1,6 +1,6 @@
 {
   "name": "@wpdas/naxios",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Promise based NEAR Contract and NEAR Wallet client for browser",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -36,10 +36,10 @@
   "author": "Wenderson Pires <wendersonpdas@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@near-wallet-selector/core": "^8.9.1",
-    "@near-wallet-selector/modal-ui": "^8.9.1",
-    "@near-wallet-selector/my-near-wallet": "^8.9.1",
-    "near-api-js": "^2.1.4",
+    "@near-wallet-selector/core": "^8.9.13",
+    "@near-wallet-selector/modal-ui": "^8.9.13",
+    "@near-wallet-selector/my-near-wallet": "^8.9.13",
+    "near-api-js": "^5.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
