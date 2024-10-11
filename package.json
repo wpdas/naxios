@@ -17,7 +17,6 @@
   ],
   "scripts": {
     "build": "rm -rf dist; tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
-    "prepack": "npm install; npm run build",
     "test": "jest"
   },
   "keywords": [

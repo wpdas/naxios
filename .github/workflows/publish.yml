@@ -13,6 +13,13 @@ jobs:
         with:
           node-version: 18
           registry-url: https://registry.npmjs.org/
-      - run: npm publish --access public
+      # Install Yarn
+      - run: npm install -g yarn
+      # Install dependencies using Yarn
+      - run: yarn install
+      # Run build script
+      - run: yarn build
+      # Publish the package to NPM
+      - run: yarn publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
