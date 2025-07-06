@@ -71,6 +71,10 @@ export type BuildViewInterfaceConfig = {
    * Use cached data (if avaiable and not expired)?
    */
   useCache?: boolean
+  /**
+   * Expiration time in seconds. If not set, the default (set while calling contractApi) expiration time will be used.
+   */
+  expirationTime?: number
 }
 
 // Naxios Constructor

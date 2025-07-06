@@ -17,25 +17,28 @@ if (process.env.NODE_ENV !== 'test') {
 class StorageCache implements CacheI {
   private expirationTime = 60 // Default is 1 minute
 
+  /**
+   * @param expirationTime - Expiration time in seconds. Will be used as default expiration time for all items if customExpirationTime is not provided.
+   */
   constructor({ expirationTime }: CacheConstructor) {
     this.expirationTime = expirationTime || this.expirationTime
   }
 
-  private prepareData(data: any) {
+  private prepareData(data: any, customExpirationTime?: number) {
     return {
-      expiresAt: Date.now() + this.expirationTime * 1000,
+      expiresAt: Date.now() + (customExpirationTime || this.expirationTime) * 1000,
       data,
     }
   }
 
-  setItem<T>(key: string, value: T) {
+  setItem<T>(key: string, value: T, customExpirationTime?: number) {
     return new Promise<void>((resolve) => {
       if (!isLocalStorageAccessible) {
         resolve()
         return
       }
 
-      const data = this.prepareData(value)
+      const data = this.prepareData(value, customExpirationTime)
 
       // persist data
       localStorage.setItem(key, JSON.stringify(data))

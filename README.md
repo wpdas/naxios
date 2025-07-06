@@ -33,14 +33,14 @@ Using npm:
 
 ```bash
 # You can use any wallet selector version you want
-npm install @wpdas/naxios @near-wallet-selector/modal-ui@8.9.13
+npm install @wpdas/naxios @near-wallet-selector/modal-ui@9.0.3
 ```
 
 Using yarn:
 
 ```bash
 # You can use any wallet selector version you want
-yarn add @wpdas/naxios @near-wallet-selector/modal-ui@8.9.13
+yarn add @wpdas/naxios @near-wallet-selector/modal-ui@9.0.3
 ```
 
 ## How to Use
@@ -146,7 +146,7 @@ Find out all the NEAR wallet selectors here: [**NEAR Wallet Selector**](https://
 - `view`: Make a read-only call to retrieve information from the network. It has the following parameters:
   - `method`: Contract's method name.
   - `props?`: an optional parameter with `args` for the contract's method.
-  - `config?`: currently, this has only the `useCache` prop. When useCache is true, this is going to use non-expired cached data instead of calling the contract's method.
+  - `config?`: currently, this has the `useCache` and `expirationTime` prop. When useCache is true, this is going to use non-expired cached data instead of calling the contract's method. expirationTime prop can be used to overwrite the default expiration time set while calling `contractApi` method.
 - `call`: Call a method that changes the contract's state. This is payable. It has the following parameters:
   - `method`: Contract's method name
   - `props?`: an optional parameter with `args` for the contract's method, `gas`, `deposit` to be attached and `callbackUrl` if you want to take the user to a specific page after a transaction succeeds.
@@ -221,7 +221,7 @@ There are two kinds of cache systems to be used. They are `Memory Cache` and `St
 `Memory Cache`: will be cleared when the app refreshes, as its data lives in memory only. <br/>
 `Storage Cache`: The data will remain even when the browser tab is refreshed. Data is persisted using Local Storage.
 
-When instantiating a cache, you need to provide the `expirationTime` (in seconds). This is used to know when the cache should be returned instead of making a real contract call. When the cache expires, a real call to the contract is made. Each contract's method has its own time of expiration.
+When instantiating a cache, you need to provide the `expirationTime` (in seconds). This is used as the default value of expirantion and to know when the cache should be returned instead of making a real contract call. When the cache expires, a real call to the contract is made. Each contract's method has its own time of expiration.
 
 ```ts
 // web3Api.ts
@@ -246,6 +246,8 @@ import { cachedGreetingContractApi } from './web3Api'
 // Fetch Greetings [free]
 const args: {}
 const config: { useCache: true }
+// expirationTime here is optional, if set, will overwrite the default expirationTime set while calling contractApi method
+// const config: { useCache: true, expirationTime }
 cachedGreetingContractApi.view<string>('get_greeting', args, config).then((response) => console.log(response))
 ```
 

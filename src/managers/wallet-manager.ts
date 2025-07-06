@@ -49,6 +49,10 @@ export class WalletManager {
    */
   recentlySignedInWallets: string[] = []
   selectedWalletId: string | null = null
+  /**
+   * Event controllers
+   */
+  private walletEventInitiated = false
 
   constructor(config: WalletManagerConfig) {
     this.contractId = config.contractId
@@ -114,7 +118,10 @@ export class WalletManager {
       await this.setupData()
     } else {
       // Setup data on user sign in
-      walletSelector.on('signedIn', this.setupData)
+      if (!this.walletEventInitiated) {
+        walletSelector.on('signedIn', this.setupData)
+        this.walletEventInitiated = true
+      }
     }
 
     this.changeWalletStatus('ready')

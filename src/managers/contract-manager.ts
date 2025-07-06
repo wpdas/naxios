@@ -99,7 +99,7 @@ class ContractManager {
 
     // If cache is available, store data on it
     if (config?.useCache && this.cache) {
-      await this.cache.setItem<R>(cacheKey, outcome)
+      await this.cache.setItem<R>(cacheKey, outcome, config.expirationTime)
     }
 
     return outcome

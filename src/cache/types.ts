@@ -16,7 +16,8 @@ export interface Data<T> {
 
 export interface CacheConstructor {
   /**
-   * Expiration time in seconds. After expiration, this is going to fetch real data instead of using cached data.
+   * Expiration time in seconds. Will be used as default expiration time for all items if customExpirationTime is not provided.
+   * After expiration, this is going to fetch real data instead of using cached data.
    */
   expirationTime?: number
 }
