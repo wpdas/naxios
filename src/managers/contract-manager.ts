@@ -13,7 +13,7 @@ import {
 } from './types'
 import MemoryCache from '../cache/MemoryCache'
 import StorageCache from '../cache/StorageCache'
-import { pollingAsyncCall } from '..'
+import { pollingAsyncCall, queueCalls } from '..'
 
 type ResultType = QueryResponseKind & { result: any }
 
@@ -42,13 +42,13 @@ class ContractManager {
    * @param args
    * @returns
    */
-  private getCacheKey(method: string, args: Record<string, any>) {
+  private getCacheKey(method: string, args: Record<string, any>, tag?: string) {
     let keysValues = ''
     Object.keys(args || {}).forEach((key) => {
       keysValues += `:${key}-${args[key]}`
     })
 
-    const key = `naxios::${this.walletManager.network}:${this.contractId}:${method}${keysValues}`
+    const key = `naxios::${this.walletManager.network}:${this.contractId}:${method}${keysValues}:${tag || ''}`
     return key
   }
 
@@ -60,16 +60,34 @@ class ContractManager {
     }
 
     const { method = '', args = {}, config } = props
-    const cacheKey = this.getCacheKey(method, args)
+    const cacheKey = this.getCacheKey(method, args, config?.tag)
 
     // Check if there's cached information, if so, returns it
     // item name is composed of: naxios::testnet:contractAddress:method:arg0-arg0value:arg1-arg1value...
     if (config?.useCache && this.cache) {
       const cachedData = await this.cache.getItem<R>(cacheKey)
 
+      // If cached data is "fetching", wait for it to finish
+      if (cachedData === 'fetching') {
+        const result = await pollingAsyncCall(
+          () => {
+            return Promise.resolve(this.cache!.getItem<R>(cacheKey))
+          },
+          (result) => result !== 'fetching'
+        )
+
+        if (result && result !== 'fetching') {
+          return result
+        }
+      }
+
+      // If cached data is available, return it
       if (cachedData) {
         return cachedData
       }
+
+      // If there's no cache, set as fetching
+      await this.cache.setItem<string>(cacheKey, 'fetching', config.expirationTime)
     }
     // If there's no cache, go forward...
 
@@ -199,6 +217,12 @@ class ContractManager {
    */
   async view<A extends {}, R>(method: string, props?: ViewMethodArgs<A>, config?: BuildViewInterfaceConfig) {
     await this.checkWallet()
+    if (config?.useQueue) {
+      return queueCalls.queue(
+        () => this.buildViewInterface<R>({ method, args: props?.args || {}, config }),
+        config?.tag
+      )
+    }
     return this.buildViewInterface<R>({ method, args: props?.args || {}, config })
   }
 

@@ -246,8 +246,14 @@ import { cachedGreetingContractApi } from './web3Api'
 // Fetch Greetings [free]
 const args: {}
 const config: { useCache: true }
-// expirationTime here is optional, if set, will overwrite the default expirationTime set while calling contractApi method
-// const config: { useCache: true, expirationTime }
+// expirationTime: here is optional, if set, will overwrite the default expirationTime set while calling contractApi method
+// tag: Tag to identify / differentiate the cache item
+// useQueue: Call is in queued mode, so it will wait for the previous call to finish before executing the next one. This is useful to wait previous call calling the same method to finish before executing the next one and getting the cached data if available.
+
+// Expiration time: 10 sec (default: default expiration time set while calling contractApi method)
+// Tag: "greeting" (default: undefined)
+// useQueue: true (default: false)
+// const config: { useCache: true, expirationTime: 10, useQueue: true }
 cachedGreetingContractApi.view<string>('get_greeting', args, config).then((response) => console.log(response))
 ```
 
@@ -269,6 +275,19 @@ rpcApi
 ```
 
 ## Utils
+
+#### `queueCalls`
+
+`queueCalls` can be used to queue promise function calls so that they are executed linearly one after another.
+
+```ts
+import { queueCalls } from '@wpdas/naxios'
+
+const promise1 = queueCalls.queue(() => promiseMethod1())
+
+// This will be resolved after the promise above
+const promise2 = queueCalls.queue(() => promiseMethod2())
+```
 
 #### `buildTransaction`
 

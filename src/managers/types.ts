@@ -75,6 +75,17 @@ export type BuildViewInterfaceConfig = {
    * Expiration time in seconds. If not set, the default (set while calling contractApi) expiration time will be used.
    */
   expirationTime?: number
+  /**
+   * Tag to identify / differentiate the cache item
+   */
+  tag?: string
+
+  /**
+   * Call is in queued mode, so it will wait for the previous call to finish before executing the next one.
+   * This is useful to wait previous call calling the same method to finish before executing the next one and
+   * getting the cached data if available.
+   */
+  useQueue?: boolean
 }
 
 // Naxios Constructor
