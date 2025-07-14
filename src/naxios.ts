@@ -12,9 +12,11 @@ class naxios {
   private network: Network
   private walletSelectorModules: WalletModuleFactory[] = [setupMyNearWallet()]
   private walletManager!: WalletManager
+  private fallbackRpcNodesUrls?: ContractManager['fallbackRpcNodesUrls']
 
   constructor(config: NaxiosConstructor) {
     this.rpcNodeUrl = config.rpcNodeUrl
+    this.fallbackRpcNodesUrls = config.fallbackRpcNodesUrls
     this.contractId = config.contractId
     this.network = config.network
 
@@ -31,6 +33,7 @@ class naxios {
       contractId: this.contractId,
       network: this.network,
       walletSelectorModules: this.walletSelectorModules,
+      fallbackRpcNodesUrls: this.fallbackRpcNodesUrls,
       onInit: config.onInit,
     })
   }
@@ -50,6 +53,7 @@ class naxios {
   contractApi(config?: ContractApi) {
     return new ContractManager({
       rpcNodeUrl: this.rpcNodeUrl,
+      fallbackRpcNodesUrls: this.fallbackRpcNodesUrls,
       walletManager: this.walletManager,
       contractId: config?.contractId,
       cache: config?.cache,
@@ -62,7 +66,11 @@ class naxios {
    * @returns
    */
   rpcApi() {
-    return new RPCProviderManager({ rpcNodeUrl: this.rpcNodeUrl, network: this.network }).provider
+    return new RPCProviderManager({
+      rpcNodeUrl: this.rpcNodeUrl,
+      fallbackRpcNodesUrls: this.fallbackRpcNodesUrls,
+      network: this.network,
+    }).provider
   }
 }
 

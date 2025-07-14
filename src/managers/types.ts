@@ -38,6 +38,10 @@ export type Network = 'mainnet' | 'testnet' | 'localnet'
 export type WalletManagerConfig = {
   contractId: string
   network: Network
+  /**
+   * A list of fallback RPC endpoint URls. List of RPC Providers: https://docs.near.org/api/rpc/providers
+   */
+  fallbackRpcNodesUrls?: string[]
   walletSelectorModules?: WalletModuleFactory[]
   onInit?: () => void
 }
@@ -47,14 +51,25 @@ export type RPCProviderManagerConfig = {
    * A custom RPC endpoint URl.
    */
   rpcNodeUrl?: string
+  /**
+   * A list of fallback RPC endpoint URls. List of RPC Providers: https://docs.near.org/api/rpc/providers
+   */
+  fallbackRpcNodesUrls?: string[]
   network: Network
 }
 
 export type ContractManagerConfig = {
   /**
-   * A custom RPC endpoint URl.
+   * A custom RPC endpoint URl. List of RPC Providers: https://docs.near.org/api/rpc/providers
    */
   rpcNodeUrl?: string
+  /**
+   * A list of fallback RPC endpoint URls. List of RPC Providers: https://docs.near.org/api/rpc/providers
+   */
+  fallbackRpcNodesUrls?: string[]
+  /**
+   * A wallet manager instance.
+   */
   walletManager: WalletManager
   contractId?: string
   cache?: MemoryCache | StorageCache
@@ -89,7 +104,7 @@ export type BuildViewInterfaceConfig = {
 }
 
 // Naxios Constructor
-export type NaxiosConstructor = Pick<ContractManagerConfig, 'rpcNodeUrl'> & {
+export type NaxiosConstructor = Pick<ContractManagerConfig, 'rpcNodeUrl' | 'fallbackRpcNodesUrls'> & {
   contractId: string
   network: Network
   // INFO: included since version 2.2.3 to support the new WalletModuleFactory<Type> type

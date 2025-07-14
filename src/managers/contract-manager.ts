@@ -13,18 +13,21 @@ import {
 } from './types'
 import MemoryCache from '../cache/MemoryCache'
 import StorageCache from '../cache/StorageCache'
-import { pollingAsyncCall, queueCalls } from '..'
+import { pollingAsyncCall, queueCalls } from '../utils'
+import { FailoverRpcProvider } from 'near-api-js/lib/providers'
 
 type ResultType = QueryResponseKind & { result: any }
 
 class ContractManager {
   private rpcNodeUrl?: ContractManagerConfig['rpcNodeUrl']
+  private fallbackRpcNodesUrls?: ContractManagerConfig['fallbackRpcNodesUrls']
   private walletManager: WalletManager
   private cache?: MemoryCache | StorageCache
   private contractId: string
 
-  constructor({ rpcNodeUrl, walletManager, cache, contractId }: ContractManagerConfig) {
+  constructor({ rpcNodeUrl, fallbackRpcNodesUrls, walletManager, cache, contractId }: ContractManagerConfig) {
     this.rpcNodeUrl = rpcNodeUrl
+    this.fallbackRpcNodesUrls = fallbackRpcNodesUrls
     this.walletManager = walletManager
     this.cache = cache
     this.contractId = contractId || walletManager.contractId
@@ -103,7 +106,24 @@ class ContractManager {
     }
 
     const { network } = this.walletManager.walletSelector.options
-    const provider = new providers.JsonRpcProvider({ url: this.rpcNodeUrl ?? network.nodeUrl })
+
+    let providersList = [new providers.JsonRpcProvider({ url: this.rpcNodeUrl ?? network.nodeUrl })]
+    if (this.fallbackRpcNodesUrls) {
+      const fallbackProviders = this.fallbackRpcNodesUrls.map(
+        (url) =>
+          new providers.JsonRpcProvider(
+            { url },
+            {
+              retries: 3, // Number of retries before giving up on a request
+              backoff: 2, // Backoff factor for the retry delay
+              wait: 500, // Wait time between retries in milliseconds
+            }
+          )
+      )
+      providersList = [...providersList, ...fallbackProviders]
+    }
+
+    const provider = new FailoverRpcProvider(providersList)
 
     const res = (await provider.query({
       request_type: 'call_function',
@@ -143,8 +163,9 @@ class ContractManager {
     const { accountId } = this.walletManager.accounts[0]
 
     // Sign a transaction with the "FunctionCall" action
+    let outcome: providers.FinalExecutionOutcome | void
     try {
-      const outcome = await this.walletManager.wallet!.signAndSendTransaction({
+      outcome = await this.walletManager.wallet!.signAndSendTransaction({
         signerId: accountId,
         receiverId: this.contractId,
         callbackUrl,
@@ -160,9 +181,20 @@ class ContractManager {
           },
         ],
       })
+    } catch (error) {
+      console.error('Naxios Internal: Error signing and sending transaction =>', error)
+      return Promise.reject(error)
+    }
 
+    if (!outcome) {
+      console.log('Naxios Internal: No outcome from transaction')
+      return Promise.resolve({} as R)
+    }
+
+    try {
       return Promise.resolve(providers.getTransactionLastResult(outcome as providers.FinalExecutionOutcome) as R)
     } catch (error) {
+      console.error('Naxios Internal: Error getting transaction last result =>', error)
       return Promise.reject(error)
     }
   }

@@ -62,7 +62,10 @@ It's super easy to get a Wallet and/or Contract API in place all at once. Take a
 import naxios from '@wpdas/naxios'
 
 const naxiosInstance = new naxios({
-  rpcNodeUrl: 'https://free.rpc.fastnear.com', // optional
+  // optional
+  rpcNodeUrl: 'https://free.rpc.fastnear.com',
+  // optional but recommended - fallback rpcs will be used in case the previous one fails
+  fallbackRpcNodesUrls: ['https://free.rpc.fastnear.com', 'https://near.lava.build:443'],
   contractId: CONTRACT_ID,
   network: 'testnet',
 })

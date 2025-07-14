@@ -54,9 +54,12 @@ export class WalletManager {
    */
   private walletEventInitiated = false
 
+  private fallbackRpcNodesUrls?: string[]
+
   constructor(config: WalletManagerConfig) {
     this.contractId = config.contractId
     this.network = config.network
+    this.fallbackRpcNodesUrls = config.fallbackRpcNodesUrls
 
     if (config.walletSelectorModules) {
       this.walletSelectorModules = config.walletSelectorModules
@@ -110,6 +113,7 @@ export class WalletManager {
     const walletSelector = await setupWalletSelector({
       network: nearConfig.networkId as NetworkId,
       modules: this.walletSelectorModules,
+      fallbackRpcUrls: this.fallbackRpcNodesUrls,
     })
     this.walletSelector = walletSelector
 
